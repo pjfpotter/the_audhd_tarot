@@ -1,6 +1,6 @@
 import {
   createInitialState, computeAttackMaps, legalMovesForSquare, applyMove,
-  gameStatus, squareName, FILES,
+  gameStatus, squareName, FILES, attackRaysForSquare,
 } from './chess.js';
 
 const GLYPHS = {
@@ -12,16 +12,28 @@ const boardEl = document.getElementById('board');
 const statusEl = document.getElementById('status-line');
 const moveListEl = document.getElementById('move-list');
 const inspectorEl = document.getElementById('inspector');
+const capturedByWhiteEl = document.getElementById('captured-by-white');
+const capturedByBlackEl = document.getElementById('captured-by-black');
+const btnBack = document.getElementById('btn-back');
+const btnForward = document.getElementById('btn-forward');
+
+const PIECE_VALUE = { P: 1, N: 3, B: 3, R: 5, Q: 9, K: 0 };
 
 const controls = {
   showWhite: document.getElementById('toggle-white'),
   showBlack: document.getElementById('toggle-black'),
   showCounts: document.getElementById('toggle-counts'),
   showThreats: document.getElementById('toggle-threats'),
+  showLines: document.getElementById('toggle-lines'),
 };
 
-let state = createInitialState();
-let history = [state];
+// `timeline` holds one game state per ply (index 0 = initial position);
+// `viewIndex` is whichever one is currently displayed/played from. Playing
+// a move while viewIndex isn't at the end truncates everything after it —
+// same as most chess GUIs — rather than blocking review-then-play.
+let timeline = [createInitialState()];
+let viewIndex = 0;
+let state = timeline[viewIndex];
 let selected = null; // {r,c}
 let legalTargets = []; // moves for selected piece
 let flipped = false;
@@ -47,13 +59,32 @@ for (let r = 0; r < 8; r++) {
     countEl.className = 'count-label';
 
     sq.append(whiteLayer, blackLayer, pieceEl, countEl);
-    sq.addEventListener('mouseenter', () => { hovered = { r, c }; showInspector(r, c); });
+    sq.addEventListener('mouseenter', () => onHoverSquare(r, c));
     sq.addEventListener('pointerdown', (e) => onPointerDown(e, r, c));
 
     boardEl.appendChild(sq);
     squares.push({ el: sq, whiteLayer, blackLayer, pieceEl, countEl, r, c });
   }
 }
+
+const SVG_NS = 'http://www.w3.org/2000/svg';
+const linesSvg = document.createElementNS(SVG_NS, 'svg');
+linesSvg.setAttribute('class', 'attack-lines-svg');
+linesSvg.setAttribute('viewBox', '0 0 8 8');
+linesSvg.setAttribute('preserveAspectRatio', 'none');
+const defs = document.createElementNS(SVG_NS, 'defs');
+defs.innerHTML = `
+  <marker id="arrow-w" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="rgb(22,163,74)" />
+  </marker>
+  <marker id="arrow-b" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+    <path d="M0,0 L10,5 L0,10 z" fill="rgb(220,38,38)" />
+  </marker>
+`;
+linesSvg.appendChild(defs);
+boardEl.appendChild(linesSvg);
+
+boardEl.addEventListener('mouseleave', clearAttackLines);
 addCoordLabels();
 
 function addCoordLabels() {
@@ -131,8 +162,11 @@ function render() {
 
   renderStatusLine(status);
   renderMoveList();
+  renderCaptured();
+  refreshHover();
 
-  if (hovered) showInspector(hovered.r, hovered.c);
+  btnBack.disabled = viewIndex === 0;
+  btnForward.disabled = viewIndex === timeline.length - 1;
 }
 
 function renderStatusLine(status) {
@@ -152,13 +186,79 @@ function renderMoveList() {
     const num = document.createElement('div');
     num.className = 'num';
     num.textContent = (i / 2 + 1) + '.';
-    const w = document.createElement('div');
-    w.textContent = state.history[i]?.text ?? '';
-    const b = document.createElement('div');
-    b.textContent = state.history[i + 1]?.text ?? '';
-    moveListEl.append(num, w, b);
+    moveListEl.append(num, moveCell(i), moveCell(i + 1));
   }
   moveListEl.scrollTop = moveListEl.scrollHeight;
+}
+
+function moveCell(plyIndex) {
+  const entry = state.history[plyIndex];
+  const cell = document.createElement('div');
+  if (!entry) return cell;
+  cell.textContent = entry.text;
+  cell.className = 'move-entry';
+  if (plyIndex + 1 === viewIndex) cell.classList.add('current-move');
+  cell.addEventListener('click', () => goTo(plyIndex + 1));
+  return cell;
+}
+
+function renderCaptured() {
+  const captured = state.history.map(h => h.captured).filter(Boolean);
+  const byWhite = captured.filter(p => p[0] === 'b'); // white captured black pieces
+  const byBlack = captured.filter(p => p[0] === 'w');
+  const order = { Q: 0, R: 1, B: 2, N: 3, P: 4 };
+  const sortFn = (a, b) => order[a[1]] - order[b[1]];
+  const materialDiff = (list) => list.reduce((sum, p) => sum + PIECE_VALUE[p[1]], 0);
+  const whiteEdge = materialDiff(byWhite) - materialDiff(byBlack);
+
+  const renderTray = (el, list, edge) => {
+    el.innerHTML = list.slice().sort(sortFn).map(p => `<span class="piece-${p[0]}">${GLYPHS[p]}</span>`).join('');
+    if (edge > 0) el.innerHTML += `<span class="material-diff">+${edge}</span>`;
+  };
+  renderTray(capturedByWhiteEl, byWhite, whiteEdge);
+  renderTray(capturedByBlackEl, byBlack, -whiteEdge);
+}
+
+function onHoverSquare(r, c) {
+  hovered = { r, c };
+  refreshHover();
+}
+
+function refreshHover() {
+  if (!hovered) return;
+  showInspector(hovered.r, hovered.c);
+  drawAttackLines(hovered.r, hovered.c);
+}
+
+function toDisplay(r, c) {
+  return flipped ? { r: 7 - r, c: 7 - c } : { r, c };
+}
+
+function clearAttackLines() {
+  linesSvg.querySelectorAll('line').forEach(el => el.remove());
+}
+
+function drawAttackLines(r, c) {
+  clearAttackLines();
+  if (!controls.showLines.checked) return;
+  const piece = state.board[r][c];
+  if (!piece) return;
+
+  const origin = toDisplay(r, c);
+  const colorClass = piece[0] === 'w' ? 'line-w' : 'line-b';
+  const marker = piece[0] === 'w' ? 'url(#arrow-w)' : 'url(#arrow-b)';
+
+  for (const target of attackRaysForSquare(state.board, r, c)) {
+    const to = toDisplay(target.r, target.c);
+    const line = document.createElementNS(SVG_NS, 'line');
+    line.setAttribute('x1', origin.c + 0.5);
+    line.setAttribute('y1', origin.r + 0.5);
+    line.setAttribute('x2', to.c + 0.5);
+    line.setAttribute('y2', to.r + 0.5);
+    line.setAttribute('class', 'attack-line ' + colorClass);
+    line.setAttribute('marker-end', marker);
+    linesSvg.appendChild(line);
+  }
 }
 
 function showInspector(r, c) {
@@ -333,29 +433,47 @@ function offerPromotion(from, move) {
 }
 
 function commitMove(from, move) {
-  state = applyMove(state, from, move);
-  history.push(state);
+  const newState = applyMove(state, from, move);
+  timeline = timeline.slice(0, viewIndex + 1);
+  timeline.push(newState);
+  viewIndex = timeline.length - 1;
+  state = newState;
   selected = null;
   legalTargets = [];
   render();
 }
 
-document.getElementById('btn-reset').addEventListener('click', () => {
-  state = createInitialState();
-  history = [state];
+function goTo(index) {
+  const clamped = Math.max(0, Math.min(timeline.length - 1, index));
+  if (clamped === viewIndex) return;
+  viewIndex = clamped;
+  state = timeline[viewIndex];
   selected = null;
   legalTargets = [];
+  pendingPromotion = null;
+  document.querySelectorAll('.promo-picker').forEach(el => el.remove());
+  render();
+}
+
+document.getElementById('btn-reset').addEventListener('click', () => {
+  timeline = [createInitialState()];
+  viewIndex = 0;
+  state = timeline[viewIndex];
+  selected = null;
+  legalTargets = [];
+  pendingPromotion = null;
+  document.querySelectorAll('.promo-picker').forEach(el => el.remove());
   render();
 });
 
-document.getElementById('btn-undo').addEventListener('click', () => {
-  if (history.length > 1) {
-    history.pop();
-    state = history[history.length - 1];
-    selected = null;
-    legalTargets = [];
-    render();
-  }
+btnBack.addEventListener('click', () => goTo(viewIndex - 1));
+btnForward.addEventListener('click', () => goTo(viewIndex + 1));
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowLeft') goTo(viewIndex - 1);
+  else if (e.key === 'ArrowRight') goTo(viewIndex + 1);
+  else return;
+  e.preventDefault();
 });
 
 document.getElementById('btn-flip').addEventListener('click', () => {

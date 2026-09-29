@@ -91,6 +91,31 @@ export function pieceAttackSquares(board, r, c) {
   return squares;
 }
 
+// Returns one endpoint per attacking "ray": for sliding pieces, the
+// farthest square reached in each open direction (a single line from the
+// piece captures that whole ray visually); for other pieces, every
+// attacked square individually. Used to draw hover attack-lines.
+export function attackRaysForSquare(board, r, c) {
+  const piece = board[r][c];
+  if (!piece) return [];
+  const type = pieceType(piece);
+  if (type !== 'B' && type !== 'R' && type !== 'Q') {
+    return pieceAttackSquares(board, r, c);
+  }
+  const dirs = type === 'B' ? BISHOP_DIRS : type === 'R' ? ROOK_DIRS : QUEEN_DIRS;
+  const rays = [];
+  for (const [dr, dc] of dirs) {
+    let nr = r + dr, nc = c + dc, far = null;
+    while (inBounds(nr, nc)) {
+      far = { r: nr, c: nc };
+      if (board[nr][nc]) break;
+      nr += dr; nc += dc;
+    }
+    if (far) rays.push(far);
+  }
+  return rays;
+}
+
 // Returns { w: {counts,attackers}, b: {...} } — counts[r][c] = number of
 // pieces of that color attacking/defending that square.
 export function computeAttackMaps(board) {
@@ -313,7 +338,7 @@ function describeMove(state, from, move, piece, capturedPiece) {
     const promo = move.promotion ? '=' + (move.promoteTo || 'Q') : '';
     text = `${label}${isCapture ? 'x' : ''}${squareName(move.to.r, move.to.c)}${promo}`;
   }
-  return { color: pieceColor(piece), text };
+  return { color: pieceColor(piece), text, captured: capturedPiece || null };
 }
 
 export function gameStatus(state) {

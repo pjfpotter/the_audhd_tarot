@@ -20,8 +20,19 @@
       </div>
       <div class="buttons-row">
         <button class="action" id="btn-reset">Reset board</button>
-        <button class="action" id="btn-undo">Undo move</button>
+        <button class="action" id="btn-back" title="Step back (←)">◀ Back</button>
+        <button class="action" id="btn-forward" title="Step forward (→)">Forward ▶</button>
         <button class="action" id="btn-flip">Flip board</button>
+      </div>
+      <div class="panel captured-panel">
+        <div class="captured-row">
+          <span class="captured-label">White captured</span>
+          <div class="captured-pieces" id="captured-by-white"></div>
+        </div>
+        <div class="captured-row">
+          <span class="captured-label">Black captured</span>
+          <div class="captured-pieces" id="captured-by-black"></div>
+        </div>
       </div>
     </div>
 
@@ -40,6 +51,9 @@
         <div class="toggle-row">
           <label><input type="checkbox" id="toggle-counts" /> Show attacker counts (W/B)</label>
         </div>
+        <div class="toggle-row">
+          <label><input type="checkbox" id="toggle-lines" checked /> Draw attack lines on hover</label>
+        </div>
       </div>
 
       <div class="panel">
@@ -57,6 +71,8 @@
   <footer>
     Darker green/red = more attackers on that square; where both overlap, the square is contested by both sides.
     A dashed orange ring marks a piece under attack; a pulsing red ring marks one that's attacked more times than it's defended.
+    Hover a piece to trace its exact lines of attack. Step back/forward (or use ← →) to review the game; playing a move from
+    an earlier point starts a new line from there.
   </footer>
 
   <script type="module" src="js/main.js"></script>

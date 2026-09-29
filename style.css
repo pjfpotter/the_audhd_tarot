@@ -76,6 +76,7 @@ header p {
   border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  position: relative;
 }
 
 .square {
@@ -90,6 +91,22 @@ header p {
 
 .square.light { background: var(--square-light); }
 .square.dark { background: var(--square-dark); }
+
+.attack-lines-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.attack-line {
+  stroke: rgb(var(--white-attack));
+  stroke-width: 0.06;
+  opacity: 0.9;
+}
+.attack-line.line-b { stroke: rgb(var(--black-attack)); }
 
 .overlay {
   position: absolute;
@@ -293,6 +310,53 @@ button.action {
 }
 button.action:hover { background: #3d3d47; }
 button.action:active { transform: translateY(1px); }
+button.action:disabled {
+  opacity: 0.4;
+  cursor: default;
+  transform: none;
+}
+button.action:disabled:hover { background: #33333c; }
+
+.captured-panel {
+  width: min(78vmin, 620px);
+  padding: 0.6rem 1rem;
+}
+.captured-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 1.8em;
+}
+.captured-row + .captured-row { margin-top: 0.35rem; }
+.captured-label {
+  font-size: 0.78rem;
+  color: var(--text-dim);
+  flex-shrink: 0;
+  width: 8em;
+}
+.captured-pieces {
+  font-size: 1.2rem;
+  letter-spacing: -0.15em;
+  display: flex;
+  align-items: center;
+}
+.captured-pieces .piece-w {
+  color: #f7f4ee;
+  -webkit-text-stroke: 1px #1a1a1a;
+  paint-order: stroke fill;
+}
+.captured-pieces .piece-b {
+  color: #1a1a1a;
+  -webkit-text-stroke: 1px #f7f4ee;
+  paint-order: stroke fill;
+}
+.captured-pieces .material-diff {
+  font-size: 0.78rem;
+  letter-spacing: normal;
+  color: var(--accent);
+  margin-left: 0.5em;
+  font-weight: 700;
+}
 
 #inspector {
   font-size: 0.85rem;
@@ -314,6 +378,17 @@ button.action:active { transform: translateY(1px); }
   column-gap: 6px;
 }
 #move-list .num { color: var(--text-dim); }
+.move-entry {
+  cursor: pointer;
+  border-radius: 3px;
+  padding: 0 3px;
+}
+.move-entry:hover { background: #33333c; }
+.move-entry.current-move {
+  background: var(--accent);
+  color: #1a1a1a;
+  font-weight: 700;
+}
 
 footer {
   padding: 0 1.5rem 2rem;
