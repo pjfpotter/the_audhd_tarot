@@ -30,6 +30,12 @@ npm run test:e2e   # browser tests; builds first
 
 The browser tests need Chromium once: `npx playwright install chromium`.
 
+## Deploying
+
+The site is served by Cloudflare from the built `dist/` folder, as configured
+in `wrangler.jsonc`. The GitHub repository is connected to the Cloudflare
+project, so every push to `main` builds and deploys by itself.
+
 ## Where things are
 
 | Path | What |

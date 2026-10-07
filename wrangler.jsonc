@@ -1,0 +1,14 @@
+// Cloudflare deployment. The app is static files only: `npm run build` writes
+// them to dist/, and Cloudflare serves that folder. There is no server code.
+{
+  // Must match the name of the Worker the GitHub repo is connected to.
+  "name": "drop-a964c8a2-030",
+  "compatibility_date": "2026-10-01",
+  // Runs before every deploy, so the dashboard needs no build command of its own.
+  "build": {
+    "command": "npm run build"
+  },
+  "assets": {
+    "directory": "./dist"
+  }
+}

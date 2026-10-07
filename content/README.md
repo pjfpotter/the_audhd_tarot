@@ -3,7 +3,10 @@
 ## Where the text comes from
 
 The card text is the author's writing, carried over word for word from the v1
-prototype at <https://drop-a964c8a2-030.pjpotter.workers.dev/>.
+prototype, which was at <https://drop-a964c8a2-030.pjpotter.workers.dev/> until
+this app replaced it at that address. The snapshot below is now the only copy
+of the v1 text, and `scripts/extract-v1.mjs` can no longer be re-run against
+that address.
 
 - `content/v1-snapshot.json` is the card array exactly as it appears in the
   prototype, written by `node scripts/extract-v1.mjs`.
