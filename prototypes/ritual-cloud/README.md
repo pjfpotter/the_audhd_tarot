@@ -23,5 +23,7 @@ with each input was tried and removed.
 Left out on purpose: the intention, the real reading, and all
 accessibility work.
 
-Tilt is refused inside a claude.ai page. To test it, the file needs wrapping in
-a normal HTML document and serving from an ordinary HTTPS address.
+Tilt is refused inside a claude.ai page, so the prototype is also published with
+the site, at `/prototypes/ritual-cloud/`. `scripts/publish-prototypes.mjs` wraps
+it in a document and copies it into `dist/` at the end of `npm run build`. It
+comes out of the site when the real ritual draw replaces it.
