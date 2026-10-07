@@ -1,0 +1,782 @@
+<title>Ritual Cloud Prototype</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=IM+Fell+English&display=swap">
+<style>
+  /* Layout: one full-screen scene; controls float at its edges and never cover the centre. */
+  :root {
+    color-scheme: dark;
+    --bg: #000000;
+    --surface: #140b2a;
+    --text: #ede7ff;
+    --text-muted: #b9ace0;
+    --accent: #6b3fd4;
+    --accent-text: #bfa6ff;
+    --button-bg: #ede7ff;
+    --button-text: #000000;
+    --font-text: 'Atkinson Hyperlegible', system-ui, sans-serif;
+    --font-display: 'IM Fell English', Georgia, serif;
+    --font-label: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    --gutter: 16px;
+  }
+
+  html, body { height: 100%; }
+
+  body {
+    position: relative;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-text);
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  button, input { font: inherit; color: inherit; }
+
+  :focus-visible { outline: 3px solid var(--accent-text); outline-offset: 3px; }
+
+  #scene {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    touch-action: none;
+    cursor: grab;
+  }
+
+  #scene:active { cursor: grabbing; }
+
+  .top, .bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-inline: var(--gutter);
+    pointer-events: none;
+  }
+
+  .top { top: 0; padding-block: 12px; justify-content: space-between; }
+
+  .bottom {
+    bottom: 0;
+    padding-block: 56px 16px;
+    flex-direction: column;
+    text-align: center;
+    background: linear-gradient(to bottom, rgb(0 0 0 / 0), rgb(0 0 0 / 0.85) 45%, #000000);
+  }
+
+  .top > *, .bottom > * { pointer-events: auto; }
+
+  .name { font-family: var(--font-display); font-size: 1.25rem; line-height: 1.2; }
+
+  .ghost {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 0 16px;
+    background: rgb(0 0 0 / 0.6);
+    border: 2px solid var(--text);
+    font-family: var(--font-label);
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+
+  .primary {
+    min-height: 56px;
+    padding: 8px 40px;
+    background: var(--button-bg);
+    color: var(--button-text);
+    border: 0;
+    box-shadow: 6px 6px 0 var(--accent);
+    font-size: 1.25rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .hint { max-width: 34rem; font-size: 0.9375rem; color: var(--text-muted); text-wrap: balance; }
+
+  /* The hidden number: shown as glyphs, so it can be watched without being read. */
+  .number {
+    font-family: var(--font-label);
+    font-size: 1.125rem;
+    letter-spacing: 0.35em;
+    color: var(--accent-text);
+    min-height: 1.6em;
+  }
+
+  .positions span {
+    position: absolute;
+    translate: -50% 8px;
+    width: 7.5rem;
+    max-width: 30vw;
+    font-family: var(--font-label);
+    font-size: 0.875rem;
+    line-height: 1.3;
+    text-align: center;
+    color: var(--accent-text);
+    pointer-events: none;
+  }
+
+  .panel {
+    position: absolute;
+    top: 68px;
+    right: var(--gutter);
+    width: min(20rem, calc(100% - 2 * var(--gutter)));
+    max-height: calc(100% - 84px);
+    overflow-y: auto;
+    display: grid;
+    gap: 14px;
+    padding: 16px;
+    background: var(--surface);
+    border: 2px solid var(--accent);
+  }
+
+  .panel h2 { margin: 0; font-family: var(--font-display); font-size: 1.375rem; font-weight: 400; }
+
+  .row { display: grid; gap: 2px; }
+
+  .row label { display: flex; justify-content: space-between; gap: 8px; font-size: 0.9375rem; }
+
+  .row output { font-family: var(--font-label); color: var(--accent-text); font-variant-numeric: tabular-nums; }
+
+  .row input[type='range'] { width: 100%; height: 44px; margin: 0; accent-color: var(--accent-text); }
+
+  .check { display: flex; align-items: center; gap: 12px; min-height: 44px; font-size: 0.9375rem; cursor: pointer; }
+
+  .check input { width: 22px; height: 22px; margin: 0; accent-color: var(--accent-text); }
+
+  .note { margin: 0; font-size: 0.875rem; color: var(--text-muted); }
+
+  .stats { font-family: var(--font-label); font-size: 0.875rem; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+</style>
+
+<canvas id="scene" tabindex="0" aria-label="A cloud of 22 face-down cards. Tap, press any key, or drag to shuffle."></canvas>
+
+<div class="top">
+  <span class="name">Ritual cloud</span>
+  <button type="button" class="ghost" id="tune-toggle" aria-expanded="false" aria-controls="tune">Tune</button>
+</div>
+
+<div class="positions" id="positions" hidden>
+  <span>Where I am</span>
+  <span>How I should travel</span>
+  <span>Where I'm going next</span>
+</div>
+
+<div class="bottom">
+  <div class="number" id="number" aria-hidden="true"></div>
+  <p class="hint" id="hint">Tap for rhythm. Drag to stir. Every movement changes the number that picks your cards.</p>
+  <button type="button" class="ghost" id="tilt-ask" hidden>Let the cards feel you move</button>
+  <button type="button" class="ghost" id="play" hidden>Play</button>
+  <button type="button" class="primary" id="draw">Draw three cards</button>
+</div>
+
+<section class="panel" id="tune" hidden aria-label="Tune the feel">
+  <h2>Tune the feel</h2>
+  <div class="row">
+    <label for="s-drift">Drift <output id="o-drift"></output></label>
+    <input type="range" id="s-drift" min="0" max="2" step="0.05" value="1">
+  </div>
+  <div class="row">
+    <label for="s-pulse">Pulse strength <output id="o-pulse"></output></label>
+    <input type="range" id="s-pulse" min="0" max="3" step="0.05" value="1">
+  </div>
+  <div class="row">
+    <label for="s-stir">Stir strength <output id="o-stir"></output></label>
+    <input type="range" id="s-stir" min="0" max="3" step="0.05" value="1">
+  </div>
+  <div class="row">
+    <label for="s-depth">Depth <output id="o-depth"></output></label>
+    <input type="range" id="s-depth" min="0" max="2" step="0.05" value="1">
+  </div>
+  <div class="row">
+    <label for="s-calm">Settling <output id="o-calm"></output></label>
+    <input type="range" id="s-calm" min="0.3" max="3" step="0.05" value="1">
+  </div>
+  <div class="row">
+    <label for="s-particles">Particles <output id="o-particles"></output></label>
+    <input type="range" id="s-particles" min="0" max="900" step="20" value="360">
+  </div>
+  <div class="row">
+    <label for="s-tilt">Tilt strength <output id="o-tilt"></output></label>
+    <input type="range" id="s-tilt" min="0" max="3" step="0.05" value="1">
+  </div>
+  <label class="check"><input type="checkbox" id="c-number" checked> Show the hidden number</label>
+  <label class="check"><input type="checkbox" id="c-paused"> Pause all motion</label>
+  <p class="note" id="tilt-note"></p>
+  <p class="stats" id="stats"></p>
+  <button type="button" class="ghost" id="copy">Copy these settings</button>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function () {
+  'use strict'
+
+  const CARD_COUNT = 22
+  const CARD_W = 0.8
+  const CARD_H = CARD_W * (1354 / 720)
+  const CAM_Z = 9
+  const GLYPHS = '△▽◇○□☆×∴∵≡∞⊕⊗⊙◈◎'
+
+  const $ = (id) => document.getElementById(id)
+  const canvas = $('scene')
+
+  if (!window.THREE) {
+    $('hint').textContent = 'The 3D library did not load, so the cloud cannot be shown.'
+    $('draw').hidden = true
+    return
+  }
+
+  // ---------------------------------------------------------------- settings
+  const settings = { drift: 1, pulse: 1, stir: 1, depth: 1, calm: 1, particles: 360, tilt: 1 }
+  let paused = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  let drawn = null // indices of the three drawn cards, or null while shuffling
+
+  // ---------------------------------------------------------------- the hidden number
+  // Two 32-bit lanes. Every input is folded in; nothing is added by the device.
+  const number = { a: 0x811c9dc5, b: 0x01000193, inputs: 0 }
+
+  function fold(...values) {
+    for (const value of values) {
+      const v = Math.floor(value) | 0
+      number.a = Math.imul(number.a ^ v, 0x01000193)
+      number.b = Math.imul(number.b ^ (v >>> 7) ^ number.a, 0x85ebca6b)
+      number.b ^= number.b >>> 13
+    }
+    number.inputs++
+    showNumber()
+  }
+
+  // Timing in millionths of a second where the browser allows it.
+  const moment = () => performance.now() * 1000
+
+  function showNumber() {
+    let out = ''
+    for (let i = 0; i < 4; i++) out += GLYPHS[(number.a >>> (i * 4)) & 15]
+    for (let i = 0; i < 4; i++) out += GLYPHS[(number.b >>> (i * 4)) & 15]
+    $('number').textContent = out
+  }
+
+  function seeded(seedA, seedB) {
+    let a = seedA ^ Math.imul(seedB, 0x9e3779b1)
+    return () => {
+      a = (a + 0x6d2b79f5) | 0
+      let t = Math.imul(a ^ (a >>> 15), 1 | a)
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+    }
+  }
+
+  function pickThree() {
+    const random = seeded(number.a, number.b)
+    const pool = Array.from({ length: CARD_COUNT }, (_, i) => i)
+    const picked = []
+    while (picked.length < 3) picked.push(pool.splice(Math.floor(random() * pool.length), 1)[0])
+    return picked
+  }
+
+  // ---------------------------------------------------------------- scene
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false })
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2))
+  renderer.setClearColor(0x000000, 1)
+  renderer.outputEncoding = THREE.sRGBEncoding
+
+  const scene = new THREE.Scene()
+  scene.fog = new THREE.Fog(0x000000, 6, 21)
+  const camera = new THREE.PerspectiveCamera(50, 1, 0.1, 100)
+  camera.position.set(0, 0, CAM_Z)
+
+  const view = { w: 1, h: 1 } // visible size at z = 0
+
+  function resize() {
+    const w = canvas.clientWidth || window.innerWidth
+    const h = canvas.clientHeight || window.innerHeight
+    renderer.setSize(w, h, false)
+    camera.aspect = w / h
+    camera.updateProjectionMatrix()
+    view.h = 2 * Math.tan((camera.fov * Math.PI) / 360) * CAM_Z
+    view.w = view.h * camera.aspect
+  }
+
+  // ---------------------------------------------------------------- cards
+  const backTexture = new THREE.TextureLoader().load('card-back.webp')
+  backTexture.encoding = THREE.sRGBEncoding
+  backTexture.anisotropy = renderer.capabilities.getMaxAnisotropy()
+
+  const cardGeometry = new THREE.PlaneGeometry(CARD_W, CARD_H)
+  const cardMaterial = new THREE.MeshBasicMaterial({
+    map: backTexture,
+    side: THREE.DoubleSide,
+    alphaTest: 0.5, // the art has rounded, transparent corners
+  })
+
+  const layout = seeded(22, 78) // fixed, so the cloud starts the same for everyone
+  const spread = (r) => r() * 2 - 1
+
+  const cards = []
+  for (let i = 0; i < CARD_COUNT; i++) {
+    const mesh = new THREE.Mesh(cardGeometry, cardMaterial)
+    scene.add(mesh)
+    cards.push({
+      mesh,
+      // Home, in a unit volume: an even sunflower spiral across the screen, random in depth.
+      unit: new THREE.Vector3(
+        Math.sqrt((i + 0.5) / CARD_COUNT) * Math.cos(i * 2.39996),
+        Math.sqrt((i + 0.5) / CARD_COUNT) * Math.sin(i * 2.39996),
+        spread(layout),
+      ),
+      p: new THREE.Vector3(),
+      v: new THREE.Vector3(),
+      phase: [layout() * 6.28, layout() * 6.28, layout() * 6.28],
+      rate: [0.11 + layout() * 0.12, 0.09 + layout() * 0.12, 0.07 + layout() * 0.1],
+      lean: new THREE.Vector3(spread(layout) * 0.45, spread(layout) * 0.6, spread(layout) * 0.3),
+      spin: new THREE.Vector3(), // extra rotation from kicks, which unwinds
+      w: new THREE.Vector3(),
+      scale: 1,
+    })
+  }
+
+  const home = new THREE.Vector3()
+  function homeOf(card, time) {
+    const drift = settings.drift
+    home.set(
+      card.unit.x * view.w * 0.4 + Math.sin(time * card.rate[0] + card.phase[0]) * 0.55 * drift,
+      card.unit.y * view.h * 0.27 + view.h * 0.13 + Math.cos(time * card.rate[1] + card.phase[1]) * 0.55 * drift,
+      (card.unit.z * 4 - 2) * settings.depth + Math.sin(time * card.rate[2] + card.phase[2]) * 0.9 * drift,
+    )
+    return home
+  }
+
+  // ---------------------------------------------------------------- particles
+  const MAX_PARTICLES = 900
+  const dot = document.createElement('canvas')
+  dot.width = dot.height = 64
+  const g = dot.getContext('2d')
+  const glow = g.createRadialGradient(32, 32, 0, 32, 32, 32)
+  glow.addColorStop(0, 'rgba(255,255,255,1)')
+  glow.addColorStop(0.35, 'rgba(255,255,255,0.35)')
+  glow.addColorStop(1, 'rgba(255,255,255,0)')
+  g.fillStyle = glow
+  g.fillRect(0, 0, 64, 64)
+
+  const pPos = new Float32Array(MAX_PARTICLES * 3)
+  const pVel = new Float32Array(MAX_PARTICLES * 3)
+  const pSeed = new Float32Array(MAX_PARTICLES)
+  for (let i = 0; i < MAX_PARTICLES; i++) {
+    pPos[i * 3] = spread(layout) * 9
+    pPos[i * 3 + 1] = spread(layout) * 9
+    pPos[i * 3 + 2] = spread(layout) * 7 - 2
+    pSeed[i] = layout() * 6.28
+  }
+  const particleGeometry = new THREE.BufferGeometry()
+  particleGeometry.setAttribute('position', new THREE.BufferAttribute(pPos, 3))
+  const particles = new THREE.Points(
+    particleGeometry,
+    new THREE.PointsMaterial({
+      map: new THREE.CanvasTexture(dot),
+      color: 0xbfa6ff,
+      size: 0.24,
+      sizeAttenuation: true,
+      transparent: true,
+      opacity: 0.9,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    }),
+  )
+  scene.add(particles)
+
+  // ---------------------------------------------------------------- input
+  const ray = { origin: new THREE.Vector3(), dir: new THREE.Vector3() }
+  const tmp = new THREE.Vector3()
+  const near = new THREE.Vector3()
+  const push = new THREE.Vector3()
+
+  function aim(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect()
+    tmp.set(((clientX - rect.left) / rect.width) * 2 - 1, -((clientY - rect.top) / rect.height) * 2 + 1, 0.5)
+    tmp.unproject(camera)
+    ray.origin.copy(camera.position)
+    ray.dir.copy(tmp).sub(camera.position).normalize()
+  }
+
+  // The point on the pointer's ray closest to `p`, left in `near`.
+  function nearestOnRay(p) {
+    const t = tmp.copy(p).sub(ray.origin).dot(ray.dir)
+    return near.copy(ray.dir).multiplyScalar(t).add(ray.origin)
+  }
+
+  /** A beat: everything near the ray is thrown outward and set spinning. */
+  function pulse(strength) {
+    const s = strength * settings.pulse
+    for (const card of cards) {
+      nearestOnRay(card.p)
+      push.copy(card.p).sub(near)
+      const d = push.length()
+      const fall = Math.exp(-(d * d) / 9)
+      if (d < 0.001) push.set(layout() - 0.5, layout() - 0.5, layout() - 0.5)
+      push.normalize().multiplyScalar(5.5 * s * fall)
+      push.z += (layout() - 0.5) * 5 * s * fall
+      card.v.add(push)
+      card.w.x += (layout() - 0.5) * 9 * s * fall
+      card.w.y += (layout() - 0.5) * 12 * s * fall
+      card.w.z += (layout() - 0.5) * 5 * s * fall
+    }
+    for (let i = 0; i < settings.particles; i++) {
+      tmp.set(pPos[i * 3], pPos[i * 3 + 1], pPos[i * 3 + 2])
+      const px = tmp.x, py = tmp.y, pz = tmp.z
+      nearestOnRay(tmp)
+      const dx = px - near.x, dy = py - near.y, dz = pz - near.z
+      const d = Math.hypot(dx, dy, dz) || 1
+      const kick = (7 * s * Math.exp(-(d * d) / 14)) / d
+      pVel[i * 3] += dx * kick
+      pVel[i * 3 + 1] += dy * kick
+      pVel[i * 3 + 2] += dz * kick
+    }
+  }
+
+  /** A stir: whatever is near the ray is carried along with the movement, and winds around it. */
+  function stir(dx, dy) {
+    const s = settings.stir
+    for (const card of cards) {
+      nearestOnRay(card.p)
+      push.copy(card.p).sub(near)
+      const d = push.length()
+      const fall = Math.exp(-(d * d) / 5)
+      card.v.x += dx * 26 * s * fall
+      card.v.y += dy * 26 * s * fall
+      // Winding: a sideways shove at right angles to the offset from the pointer.
+      card.v.x += -push.y * (dx * dx + dy * dy) * 60 * s * fall
+      card.v.y += push.x * (dx * dx + dy * dy) * 60 * s * fall
+      card.w.y += dx * 22 * s * fall
+      card.w.x += -dy * 22 * s * fall
+    }
+    for (let i = 0; i < settings.particles; i++) {
+      tmp.set(pPos[i * 3], pPos[i * 3 + 1], pPos[i * 3 + 2])
+      const px = tmp.x, py = tmp.y
+      nearestOnRay(tmp)
+      const d2 = (px - near.x) ** 2 + (py - near.y) ** 2
+      const fall = Math.exp(-d2 / 8)
+      pVel[i * 3] += dx * 30 * s * fall
+      pVel[i * 3 + 1] += dy * 30 * s * fall
+    }
+  }
+
+  const pointer = { down: false, x: 0, y: 0, hoverX: 0, hoverY: 0 }
+
+  canvas.addEventListener('pointerdown', (event) => {
+    if (drawn) return
+    canvas.setPointerCapture(event.pointerId)
+    pointer.down = true
+    pointer.x = event.clientX
+    pointer.y = event.clientY
+    aim(event.clientX, event.clientY)
+    fold(1, moment(), event.clientX, event.clientY)
+    pulse(1)
+  })
+
+  canvas.addEventListener('pointermove', (event) => {
+    if (event.pointerType === 'mouse') {
+      pointer.hoverX = (event.clientX / window.innerWidth) * 2 - 1
+      pointer.hoverY = (event.clientY / window.innerHeight) * 2 - 1
+    }
+    if (!pointer.down || drawn) return
+    const scale = view.h / canvas.clientHeight
+    const dx = (event.clientX - pointer.x) * scale
+    const dy = -(event.clientY - pointer.y) * scale
+    pointer.x = event.clientX
+    pointer.y = event.clientY
+    aim(event.clientX, event.clientY)
+    fold(2, moment(), event.clientX, event.clientY)
+    stir(dx * 0.05, dy * 0.05)
+  })
+
+  const release = () => { pointer.down = false }
+  canvas.addEventListener('pointerup', release)
+  canvas.addEventListener('pointercancel', release)
+
+  // Any key is a beat; the arrow keys stir.
+  const ARROWS = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }
+  canvas.addEventListener('keydown', (event) => {
+    if (drawn || event.key === 'Tab' || event.metaKey || event.ctrlKey || event.altKey) return
+    event.preventDefault()
+    const rect = canvas.getBoundingClientRect()
+    aim(rect.left + rect.width / 2, rect.top + rect.height * 0.45)
+    fold(3, moment(), event.key.charCodeAt(0), event.key.length)
+    const arrow = ARROWS[event.key]
+    if (arrow) stir(arrow[0] * 0.12, arrow[1] * 0.12)
+    else if (!event.repeat) pulse(1)
+  })
+
+  // ---------------------------------------------------------------- tilt
+  const tilt = { x: 0, y: 0, tx: 0, ty: 0, on: false, zero: null, lastFold: 0 }
+
+  function onOrientation(event) {
+    if (event.beta == null || event.gamma == null) return
+    if (!tilt.zero) tilt.zero = { beta: event.beta, gamma: event.gamma } // however the phone is held now is "level"
+    tilt.tx = Math.max(-1, Math.min(1, (event.gamma - tilt.zero.gamma) / 35))
+    tilt.ty = Math.max(-1, Math.min(1, (event.beta - tilt.zero.beta) / 35))
+    if (!tilt.on) {
+      tilt.on = true
+      $('tilt-note').textContent = 'Tilt is on. However you were holding the phone when it started counts as level.'
+    }
+    // A real sway is input too; sensor jitter is not.
+    const now = performance.now()
+    if (now - tilt.lastFold > 250 && Math.hypot(tilt.tx - tilt.x, tilt.ty - tilt.y) > 0.06 && !drawn) {
+      tilt.lastFold = now
+      fold(4, moment(), tilt.tx * 1000, tilt.ty * 1000)
+    }
+  }
+
+  function startTilt() {
+    window.addEventListener('deviceorientation', onOrientation)
+    setTimeout(() => {
+      if (!tilt.on) $('tilt-note').textContent = 'No tilt is reaching this page. That is expected on a computer, and inside a claude.ai page; it needs testing from an ordinary web address on a phone.'
+    }, 1500)
+  }
+
+  if (typeof DeviceOrientationEvent === 'undefined') {
+    $('tilt-note').textContent = 'This device has no motion sensor the page can read.'
+  } else if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+    // iPhone: motion has to be asked for, and only in answer to a tap.
+    $('tilt-ask').hidden = false
+    $('tilt-note').textContent = 'Tilt is off until you tap "Let the cards feel you move".'
+    $('tilt-ask').addEventListener('click', () => {
+      DeviceOrientationEvent.requestPermission()
+        .then((answer) => {
+          $('tilt-ask').hidden = true
+          if (answer === 'granted') startTilt()
+          else $('tilt-note').textContent = 'Tilt was declined. Everything else works without it.'
+        })
+        .catch(() => {
+          $('tilt-ask').hidden = true
+          $('tilt-note').textContent = 'This page is not allowed to read motion here. Everything else works without it.'
+        })
+    })
+  } else {
+    startTilt()
+  }
+
+  // ---------------------------------------------------------------- draw
+  const slot = new THREE.Vector3()
+
+  // Where the i-th drawn card comes to rest, and how large, for this screen.
+  function slotFor(i) {
+    const z = 3
+    const h = 2 * Math.tan((camera.fov * Math.PI) / 360) * (CAM_Z - z)
+    const w = h * camera.aspect
+    const size = Math.min((w * 0.27) / CARD_W, (h * 0.5) / CARD_H)
+    slot.set((i - 1) * Math.min(w * 0.31, CARD_W * size * 1.35), h * 0.12, z)
+    return size
+  }
+
+  // Puts each position's name under its card, wherever that lands on this screen.
+  const labels = [...$('positions').children]
+  function placeLabels() {
+    labels.forEach((label, i) => {
+      const size = slotFor(i)
+      tmp.set(slot.x, slot.y - (CARD_H * size) / 2, slot.z).project(camera)
+      label.style.left = ((tmp.x + 1) / 2) * canvas.clientWidth + 'px'
+      label.style.top = ((1 - tmp.y) / 2) * canvas.clientHeight + 'px'
+    })
+  }
+
+  $('draw').addEventListener('click', () => {
+    if (drawn) {
+      drawn = null
+      $('draw').textContent = 'Draw three cards'
+      $('positions').hidden = true
+      $('hint').hidden = false
+      canvas.focus({ preventScroll: true })
+      return
+    }
+    // Pressing draw is itself an input, so even one press gives a number that is yours.
+    fold(5, moment())
+    drawn = pickThree()
+    $('draw').textContent = 'Shuffle again'
+    $('positions').hidden = false
+    $('hint').hidden = true
+    placeLabels()
+  })
+
+  // ---------------------------------------------------------------- frame
+  let last = performance.now()
+  let time = 0
+  let frames = 0
+  let statsAt = last
+  let fps = 0
+  const look = new THREE.Vector3(0, 0, -2)
+
+  function step(now) {
+    requestAnimationFrame(step)
+    const dt = Math.min((now - last) / 1000, 1 / 30)
+    last = now
+
+    frames++
+    if (now - statsAt > 500) {
+      fps = Math.round((frames * 1000) / (now - statsAt))
+      frames = 0
+      statsAt = now
+      $('stats').textContent = `${fps} frames a second · ${number.inputs} inputs folded in`
+    }
+
+    if (paused || document.hidden) {
+      renderer.render(scene, camera)
+      return
+    }
+    time += dt
+
+    // Tilt, or the mouse standing in for it on a computer, shifts the viewpoint.
+    const targetX = tilt.on ? tilt.tx : pointer.hoverX * 0.35
+    const targetY = tilt.on ? tilt.ty : pointer.hoverY * 0.35
+    tilt.x += (targetX - tilt.x) * Math.min(1, dt * 5)
+    tilt.y += (targetY - tilt.y) * Math.min(1, dt * 5)
+    camera.position.set(tilt.x * 1.6 * settings.tilt, -tilt.y * 1.2 * settings.tilt, CAM_Z)
+    camera.lookAt(look)
+
+    const spring = 1.3 * settings.calm
+    const damping = Math.exp(-1.7 * settings.calm * dt)
+    const unwind = Math.exp(-0.9 * settings.calm * dt)
+
+    cards.forEach((card, i) => {
+      const place = drawn ? drawn.indexOf(i) : -1
+      let targetScale = 1
+      if (place >= 0) {
+        // A drawn card comes forward, squares up and stops.
+        targetScale = slotFor(place)
+        card.v.add(tmp.copy(slot).sub(card.p).multiplyScalar(14 * dt))
+        card.v.multiplyScalar(Math.exp(-7 * dt))
+        card.spin.multiplyScalar(Math.exp(-5 * dt))
+        card.w.multiplyScalar(Math.exp(-6 * dt))
+        card.mesh.rotation.x += (0 - card.mesh.rotation.x) * Math.min(1, dt * 5)
+        card.mesh.rotation.y += (0 - card.mesh.rotation.y) * Math.min(1, dt * 5)
+        card.mesh.rotation.z += (0 - card.mesh.rotation.z) * Math.min(1, dt * 5)
+      } else {
+        homeOf(card, time)
+        if (drawn) home.z -= 7 // the rest fall back into the dark
+        // Tilt leans on the cloud a little, nearer cards more than far ones.
+        home.x += tilt.x * 0.5 * settings.tilt * (card.unit.z + 1.5)
+        home.y -= tilt.y * 0.4 * settings.tilt * (card.unit.z + 1.5)
+        card.v.add(tmp.copy(home).sub(card.p).multiplyScalar(spring * dt))
+        card.v.multiplyScalar(damping)
+        card.spin.addScaledVector(card.w, dt)
+        card.w.multiplyScalar(damping)
+        card.spin.multiplyScalar(unwind)
+        const wobble = settings.drift * 0.22
+        card.mesh.rotation.set(
+          card.lean.x + Math.sin(time * card.rate[1] * 2 + card.phase[0]) * wobble + card.spin.x,
+          card.lean.y + Math.sin(time * card.rate[0] * 2 + card.phase[1]) * wobble * 1.4 + card.spin.y,
+          card.lean.z + Math.sin(time * card.rate[2] * 2 + card.phase[2]) * wobble * 0.6 + card.spin.z,
+        )
+      }
+      card.p.addScaledVector(card.v, dt)
+      card.scale += (targetScale - card.scale) * Math.min(1, dt * 6)
+      card.mesh.position.copy(card.p)
+      card.mesh.scale.setScalar(card.scale)
+    })
+
+    // Particles drift on a slow current and are pushed around by beats and stirs.
+    const count = settings.particles
+    const fade = Math.exp(-1.4 * dt)
+    for (let i = 0; i < count; i++) {
+      const j = i * 3
+      const s = pSeed[i]
+      pVel[j] = pVel[j] * fade + Math.sin(time * 0.21 + s + pPos[j + 1] * 0.4) * 0.06 * settings.drift * dt * 10
+      pVel[j + 1] = pVel[j + 1] * fade + (0.05 + Math.cos(time * 0.17 + s * 2) * 0.04) * settings.drift * dt * 10
+      pVel[j + 2] = pVel[j + 2] * fade + Math.sin(time * 0.13 + s * 3) * 0.04 * settings.drift * dt * 10
+      pPos[j] += pVel[j] * dt
+      pPos[j + 1] += pVel[j + 1] * dt
+      pPos[j + 2] += pVel[j + 2] * dt
+      // Wrap, so the field never empties.
+      if (pPos[j] > 9) pPos[j] -= 18
+      else if (pPos[j] < -9) pPos[j] += 18
+      if (pPos[j + 1] > 9) pPos[j + 1] -= 18
+      else if (pPos[j + 1] < -9) pPos[j + 1] += 18
+      if (pPos[j + 2] > 5) pPos[j + 2] -= 14
+      else if (pPos[j + 2] < -9) pPos[j + 2] += 14
+    }
+    if (drawn) placeLabels()
+
+    particleGeometry.setDrawRange(0, count)
+    particleGeometry.attributes.position.needsUpdate = true
+
+    renderer.render(scene, camera)
+  }
+
+  // ---------------------------------------------------------------- controls
+  const sliders = [
+    ['drift', 2], ['pulse', 2], ['stir', 2], ['depth', 2], ['calm', 2], ['particles', 0], ['tilt', 2],
+  ]
+
+  function readSaved() {
+    try {
+      Object.assign(settings, JSON.parse(localStorage.getItem('ritual-cloud:settings')) || {})
+    } catch (error) { /* start from the defaults */ }
+  }
+
+  function save() {
+    try {
+      localStorage.setItem('ritual-cloud:settings', JSON.stringify(settings))
+    } catch (error) { /* not remembered; nothing else changes */ }
+  }
+
+  readSaved()
+  for (const [name, places] of sliders) {
+    const input = $('s-' + name)
+    const output = $('o-' + name)
+    input.value = settings[name]
+    const show = () => { output.textContent = Number(settings[name]).toFixed(places) }
+    show()
+    input.addEventListener('input', () => {
+      settings[name] = Number(input.value)
+      show()
+      save()
+    })
+  }
+
+  $('tune-toggle').addEventListener('click', () => {
+    const open = $('tune').hidden
+    $('tune').hidden = !open
+    $('tune-toggle').setAttribute('aria-expanded', String(open))
+    $('tune-toggle').textContent = open ? 'Close' : 'Tune'
+  })
+
+  $('c-number').addEventListener('change', (event) => { $('number').hidden = !event.target.checked })
+
+  function setPaused(value) {
+    paused = value
+    $('c-paused').checked = value
+    $('play').hidden = !value
+    if (value) $('hint').textContent = 'Motion is paused. Press Play to let the cloud move.'
+    else $('hint').textContent = 'Tap for rhythm. Drag to stir. Every movement changes the number that picks your cards.'
+  }
+
+  $('c-paused').addEventListener('change', (event) => setPaused(event.target.checked))
+  $('play').addEventListener('click', () => setPaused(false))
+
+  $('copy').addEventListener('click', () => {
+    const text = JSON.stringify(settings)
+    const done = () => { $('copy').textContent = 'Copied' }
+    const failed = () => { $('copy').textContent = text } // show it, so it can be selected by hand
+    try {
+      navigator.clipboard.writeText(text).then(done, failed)
+    } catch (error) {
+      failed()
+    }
+  })
+
+  // ---------------------------------------------------------------- start
+  resize()
+  window.addEventListener('resize', resize)
+  if (window.ResizeObserver) new ResizeObserver(resize).observe(canvas)
+  for (const card of cards) {
+    card.p.copy(homeOf(card, 0))
+    card.mesh.position.copy(card.p)
+    card.mesh.rotation.set(card.lean.x, card.lean.y, card.lean.z)
+  }
+  showNumber()
+  setPaused(paused)
+  requestAnimationFrame(step)
+})()
+</script>
