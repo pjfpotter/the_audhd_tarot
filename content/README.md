@@ -53,3 +53,6 @@ part of the app.
   describe what is actually pictured.
 - **Anchors have not been checked against this art.** Many were written from a
   different deck and may point at details these images do not show.
+- **Landing copy is a draft.** The introduction, button label and privacy line
+  in `src/app/copy.ts` were written during the build as placeholders and need
+  the author's own words.

@@ -1,0 +1,65 @@
+.landing {
+  flex: 1;
+  display: grid;
+  align-content: center;
+  gap: var(--space-5);
+}
+
+/* One word to a line: the name is the only large thing on the screen. */
+.wordmark {
+  max-width: min-content;
+  font-family: var(--font-display);
+  font-size: var(--size-display);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+}
+
+.wordmark:focus-visible {
+  outline-offset: var(--space-2);
+}
+
+.entry {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-4);
+  max-width: var(--measure);
+  padding-top: var(--space-4);
+  border-top: var(--line-width) solid var(--accent);
+}
+
+.intro {
+  font-size: var(--size-lead);
+  line-height: 1.5;
+}
+
+.enter {
+  min-height: 3.5rem;
+  padding: var(--space-2) var(--space-5);
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: 0;
+  box-shadow: 6px 6px 0 var(--accent);
+  font-size: var(--size-lead);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.enter:active {
+  box-shadow: 2px 2px 0 var(--accent);
+  translate: 4px 4px;
+}
+
+.privacy {
+  font-size: var(--size-small);
+  color: var(--text-muted);
+}
+
+@media (min-width: 60rem) {
+  .landing {
+    grid-template-columns: auto minmax(0, var(--measure));
+    justify-content: space-between;
+    align-items: end;
+    column-gap: var(--space-6);
+  }
+}

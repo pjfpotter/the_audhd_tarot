@@ -3,10 +3,41 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="A three-card tarot reading for late-diagnosed, high-masking AuDHD adults."
+    />
+    <link rel="icon" href="data:," />
     <title>The AuDHD Tarot</title>
+    <script>
+      // Applies saved options before the first paint, so the page never
+      // flashes in the wrong theme or text size. Mirrors
+      // src/preferences/preferences.ts.
+      ;(function () {
+        var root = document.documentElement
+        var saved = {}
+        try {
+          saved = JSON.parse(localStorage.getItem('audhd-tarot:preferences')) || {}
+        } catch (e) {}
+        var matches = function (query) {
+          return !!window.matchMedia && window.matchMedia(query).matches
+        }
+        root.dataset.theme =
+          saved.theme === 'light' || saved.theme === 'dark'
+            ? saved.theme
+            : matches('(prefers-color-scheme: dark)')
+              ? 'dark'
+              : 'light'
+        root.dataset.motion =
+          saved.motion === 'reduced' || matches('(prefers-reduced-motion: reduce)') ? 'reduced' : 'full'
+        var scale = [1, 1.15, 1.3, 1.5].indexOf(saved.textScale) > -1 ? saved.textScale : 1
+        root.style.setProperty('--text-scale', scale)
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>The AuDHD Tarot needs JavaScript to draw a reading.</noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

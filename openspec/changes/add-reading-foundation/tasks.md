@@ -18,17 +18,17 @@
 
 ## 3. Themes, type and preferences
 
-- [ ] 3.1 Self-host Atkinson Hyperlegible, a display face and a monospace as Latin-subset WOFF2 with `font-display: swap`; verify no request leaves the app's origin when the page loads
-- [ ] 3.2 Define the design tokens (colour, type roles, spacing, `--text-scale`) for the light and dark themes as CSS custom properties keyed on `data-theme`; verify every text/background token pair meets 4.5:1 with a unit test over the token values
-- [ ] 3.3 Implement the preferences store (theme, motion, text size) on `localStorage` with an in-memory fallback, and unit tests for defaults, persistence and blocked storage; verify the tests pass
-- [ ] 3.4 Add the inline pre-paint script that applies stored preferences to `<html>` and resolves "Match my device" for theme and motion; verify with an e2e test that reloading in dark at the largest size shows no light frame
-- [ ] 3.5 Add global motion rules so that reduced motion (device or in-app) removes all transforms and looping animation, leaving at most a short fade; verify with an e2e test under emulated reduced motion that no element has a running transform animation
+- [x] 3.1 Self-host Atkinson Hyperlegible, a display face and a monospace as Latin-subset WOFF2 with `font-display: swap`; verify no request leaves the app's origin when the page loads
+- [x] 3.2 Define the design tokens (colour, type roles, spacing, `--text-scale`) for the light and dark themes as CSS custom properties keyed on `data-theme`; verify every text/background token pair meets 4.5:1 with a unit test over the token values
+- [x] 3.3 Implement the preferences store (theme, motion, text size) on `localStorage` with an in-memory fallback, and unit tests for defaults, persistence and blocked storage; verify the tests pass
+- [x] 3.4 Add the inline pre-paint script that applies stored preferences to `<html>` and resolves "Match my device" for theme and motion; verify with an e2e test that reloading in dark at the largest size shows no light frame
+- [x] 3.5 Add global motion rules so that reduced motion (device or in-app) removes all transforms and looping animation, leaving at most a short fade; verify with an e2e test under emulated reduced motion that no element has a running transform animation
 
 ## 4. App shell and landing
 
-- [ ] 4.1 Implement the reading reducer (landing, draw, revealing with art and text sub-states, complete, start again) with unit tests for every transition; verify the tests pass
-- [ ] 4.2 Build the responsive page frame (mobile first, 320px upward, reading text capped at about 75 characters per line) with a persistent control for the options panel; verify with e2e tests at 320px and 1280px that no screen scrolls horizontally
-- [ ] 4.3 Build the landing screen with the name "The AuDHD Tarot", draft introductory copy marked for the author's review, and one primary control leading to the draw; set the page title and metadata; verify by e2e that the title and heading read "The AuDHD Tarot" and that the built output contains no "neurospicy"
+- [x] 4.1 Implement the reading reducer (landing, draw, revealing with art and text sub-states, complete, start again) with unit tests for every transition; verify the tests pass
+- [x] 4.2 Build the responsive page frame (mobile first, 320px upward, reading text capped at about 75 characters per line) with a persistent control for the options panel; verify with e2e tests at 320px and 1280px that no screen scrolls horizontally
+- [x] 4.3 Build the landing screen with the name "The AuDHD Tarot", draft introductory copy marked for the author's review, and one primary control leading to the draw; set the page title and metadata; verify by e2e that the title and heading read "The AuDHD Tarot" and that the built output contains no "neurospicy"
 - [ ] 4.4 Add an e2e test that records network activity through a full reading and asserts every request is same-origin and no cookies are set; verify it passes
 
 ## 5. Accessibility options

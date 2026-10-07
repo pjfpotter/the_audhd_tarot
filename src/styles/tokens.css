@@ -1,0 +1,58 @@
+/*
+ * Design tokens. One set of colours per theme, selected by data-theme on
+ * <html>; src/styles/tokens.test.ts checks every text pairing for contrast.
+ *
+ * --accent is for borders and glow only. It is too dark to read on black, so
+ * coloured text uses --accent-text.
+ */
+:root {
+  --font-text: 'Atkinson Hyperlegible', system-ui, sans-serif;
+  --font-display: 'IM Fell English', 'Iowan Old Style', Georgia, serif;
+  --font-label: 'Atkinson Hyperlegible Mono', ui-monospace, monospace;
+
+  /* Set by the text size option; every size below is in rem and follows it. */
+  --text-scale: 1;
+
+  --size-small: 0.875rem;
+  --size-text: 1.0625rem;
+  --size-lead: 1.25rem;
+  --size-title: 1.75rem;
+  --size-display: clamp(3rem, 15vw, 8rem);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2.5rem;
+  --space-6: 4rem;
+
+  --measure: 34rem;
+  --target: 2.75rem;
+  --line-width: 2px;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #000000;
+  --surface: #140b2a;
+  --text: #ede7ff;
+  --text-muted: #b9ace0;
+  --accent: #6b3fd4;
+  --accent-text: #bfa6ff;
+  --focus: #bfa6ff;
+  --button-bg: #ede7ff;
+  --button-text: #000000;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #e6ddfb;
+  --surface: #f4efff;
+  --text: #0a0512;
+  --text-muted: #3d3157;
+  --accent: #5b2fc4;
+  --accent-text: #45209b;
+  --focus: #45209b;
+  --button-bg: #0a0512;
+  --button-text: #f4efff;
+}
