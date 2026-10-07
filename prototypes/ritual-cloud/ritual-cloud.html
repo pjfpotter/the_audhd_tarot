@@ -118,6 +118,78 @@
     pointer-events: none;
   }
 
+  /*
+   * Reduced motion: the same rite with nothing flying about. One still deck,
+   * and the number that picks the cards shown large, rolling with each beat.
+   */
+  .still {
+    position: absolute;
+    inset: 64px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    /* Room for the number, the hint and the buttons beneath. */
+    padding: 8px var(--gutter) 15rem;
+  }
+
+  .deck {
+    position: relative;
+    height: min(42vh, 22rem);
+    aspect-ratio: 720 / 1354;
+    max-width: 60%;
+    padding: 0;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .deck img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* A loose stack, so it reads as a deck and not as one card. */
+  .deck img:nth-child(1) { rotate: -6deg; translate: -9% 2%; }
+  .deck img:nth-child(2) { rotate: 5deg; translate: 8% 1%; }
+
+  .spread {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    width: min(100%, 30rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .spread li { display: grid; gap: 8px; align-content: start; }
+
+  .spread img { width: 100%; height: auto; aspect-ratio: 720 / 1354; object-fit: contain; }
+
+  .spread span {
+    font-family: var(--font-label);
+    font-size: 0.875rem;
+    line-height: 1.3;
+    text-align: center;
+    color: var(--accent-text);
+  }
+
+  body.is-still .number { font-size: 2rem; letter-spacing: 0.3em; min-height: 1.5em; }
+
+  body.is-still .bottom { background: none; padding-block: 8px 16px; }
+
+  /* Each roll is marked by a short fade, which is all the movement there is. */
+  .number.rolled { animation: rolled 160ms ease-out; }
+
+  @keyframes rolled {
+    from { opacity: 0.35; }
+  }
+
   .panel {
     position: absolute;
     top: 68px;
@@ -158,6 +230,19 @@
   <button type="button" class="ghost" id="tune-toggle" aria-expanded="false" aria-controls="tune">Tune</button>
 </div>
 
+<div class="still" id="still" hidden>
+  <button type="button" class="deck" id="deck" aria-label="The deck. Tap, or press any key, to shuffle.">
+    <img src="card-back.webp" alt="">
+    <img src="card-back.webp" alt="">
+    <img src="card-back.webp" alt="">
+  </button>
+  <ol class="spread" id="spread" hidden>
+    <li><img src="card-back.webp" alt="A face-down card"><span>Where I am</span></li>
+    <li><img src="card-back.webp" alt="A face-down card"><span>How I should travel</span></li>
+    <li><img src="card-back.webp" alt="A face-down card"><span>Where I'm going next</span></li>
+  </ol>
+</div>
+
 <div class="positions" id="positions" hidden>
   <span>Where I am</span>
   <span>How I should travel</span>
@@ -168,7 +253,6 @@
   <div class="number" id="number" aria-hidden="true"></div>
   <p class="hint" id="hint">Tap for rhythm. Drag to stir. Every movement changes the number that picks your cards.</p>
   <button type="button" class="ghost" id="tilt-ask" hidden>Let the cards feel you move</button>
-  <button type="button" class="ghost" id="play" hidden>Play</button>
   <button type="button" class="primary" id="draw">Draw three cards</button>
 </div>
 
@@ -203,7 +287,7 @@
     <input type="range" id="s-tilt" min="0" max="3" step="0.05" value="1">
   </div>
   <label class="check"><input type="checkbox" id="c-number" checked> Show the hidden number</label>
-  <label class="check"><input type="checkbox" id="c-paused"> Pause all motion</label>
+  <label class="check"><input type="checkbox" id="c-still"> Reduced motion: a still deck</label>
   <p class="note" id="tilt-note"></p>
   <p class="stats" id="stats"></p>
   <button type="button" class="ghost" id="copy">Copy these settings</button>
@@ -232,7 +316,8 @@
   // ---------------------------------------------------------------- settings
   // Defaults tuned by the author on a phone, 2026-10-07.
   const settings = { drift: 0.3, pulse: 1.75, stir: 1, depth: 0.3, calm: 1.25, particles: 360, tilt: 1 }
-  let paused = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  // Reduced motion: no cloud at all. On by default when the device asks for it.
+  let still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   let drawn = null // indices of the three drawn cards, or null while shuffling
 
   // ---------------------------------------------------------------- the hidden number
@@ -248,6 +333,11 @@
     }
     number.inputs++
     showNumber()
+    // Restart the short fade that marks a roll.
+    const row = $('number')
+    row.classList.remove('rolled')
+    void row.offsetWidth
+    row.classList.add('rolled')
   }
 
   // Timing in millionths of a second where the browser allows it.
@@ -511,7 +601,7 @@
   })
 
   // ---------------------------------------------------------------- tilt
-  const tilt = { x: 0, y: 0, tx: 0, ty: 0, on: false, zero: null, lastFold: 0 }
+  const tilt = { x: 0, y: 0, tx: 0, ty: 0, on: false, zero: null, lastFold: 0, canAsk: false }
 
   function onOrientation(event) {
     if (event.beta == null || event.gamma == null) return
@@ -541,16 +631,18 @@
     $('tilt-note').textContent = 'This device has no motion sensor the page can read.'
   } else if (typeof DeviceOrientationEvent.requestPermission === 'function') {
     // iPhone: motion has to be asked for, and only in answer to a tap.
-    $('tilt-ask').hidden = false
+    tilt.canAsk = true
     $('tilt-note').textContent = 'Tilt is off until you tap "Let the cards feel you move".'
     $('tilt-ask').addEventListener('click', () => {
       DeviceOrientationEvent.requestPermission()
         .then((answer) => {
+          tilt.canAsk = false
           $('tilt-ask').hidden = true
           if (answer === 'granted') startTilt()
           else $('tilt-note').textContent = 'Tilt was declined. Everything else works without it.'
         })
         .catch(() => {
+          tilt.canAsk = false
           $('tilt-ask').hidden = true
           $('tilt-note').textContent = 'This page is not allowed to read motion here. Everything else works without it.'
         })
@@ -587,19 +679,47 @@
     if (drawn) {
       drawn = null
       $('draw').textContent = 'Draw three cards'
-      $('positions').hidden = true
-      $('hint').hidden = false
-      canvas.focus({ preventScroll: true })
+      showMode()
+      ;(still ? $('deck') : canvas).focus({ preventScroll: true })
       return
     }
     // Pressing draw is itself an input, so even one press gives a number that is yours.
     fold(5, moment())
     drawn = pickThree()
     $('draw').textContent = 'Shuffle again'
-    $('positions').hidden = false
-    $('hint').hidden = true
+    showMode()
     placeLabels()
   })
+
+  // ---------------------------------------------------------------- the still deck
+  // With reduced motion there is no stir and no tilt: rhythm alone shuffles.
+  $('deck').addEventListener('pointerdown', (event) => {
+    fold(1, moment(), event.clientX, event.clientY)
+  })
+
+  $('deck').addEventListener('keydown', (event) => {
+    if (event.key === 'Tab' || event.metaKey || event.ctrlKey || event.altKey || event.repeat) return
+    event.preventDefault() // Enter and Space are beats too, not a second "click"
+    fold(3, moment(), event.key.charCodeAt(0), event.key.length)
+  })
+
+  const HINTS = {
+    cloud: 'Tap for rhythm. Drag to stir. Every movement changes the number that picks your cards.',
+    still: 'Tap the deck, or press any key, as many times as you like. Every beat rolls the number that picks your cards.',
+  }
+
+  /** Shows the cloud or the still deck, and the shuffle or the three drawn cards, to match the state. */
+  function showMode() {
+    document.body.classList.toggle('is-still', still)
+    canvas.hidden = still
+    $('still').hidden = !still
+    $('deck').hidden = drawn !== null
+    $('spread').hidden = drawn === null
+    $('positions').hidden = still || drawn === null
+    $('hint').textContent = still ? HINTS.still : HINTS.cloud
+    $('hint').hidden = drawn !== null
+    $('tilt-ask').hidden = still || !tilt.canAsk
+  }
 
   // ---------------------------------------------------------------- frame
   let last = performance.now()
@@ -622,10 +742,7 @@
       $('stats').textContent = `${fps} frames a second · ${number.inputs} inputs folded in`
     }
 
-    if (paused || document.hidden) {
-      renderer.render(scene, camera)
-      return
-    }
+    if (still || document.hidden) return
     time += dt
 
     // Tilt, or the mouse standing in for it on a computer, shifts the viewpoint.
@@ -745,16 +862,12 @@
 
   $('c-number').addEventListener('change', (event) => { $('number').hidden = !event.target.checked })
 
-  function setPaused(value) {
-    paused = value
-    $('c-paused').checked = value
-    $('play').hidden = !value
-    if (value) $('hint').textContent = 'Motion is paused. Press Play to let the cloud move.'
-    else $('hint').textContent = 'Tap for rhythm. Drag to stir. Every movement changes the number that picks your cards.'
-  }
-
-  $('c-paused').addEventListener('change', (event) => setPaused(event.target.checked))
-  $('play').addEventListener('click', () => setPaused(false))
+  $('c-still').checked = still
+  $('c-still').addEventListener('change', (event) => {
+    still = event.target.checked
+    showMode()
+    if (!still) resize() // the canvas had no size while it was hidden
+  })
 
   $('copy').addEventListener('click', () => {
     const text = JSON.stringify(settings)
@@ -777,7 +890,7 @@
     card.mesh.rotation.set(card.lean.x, card.lean.y, card.lean.z)
   }
   showNumber()
-  setPaused(paused)
+  showMode()
   requestAnimationFrame(step)
 })()
 </script>
