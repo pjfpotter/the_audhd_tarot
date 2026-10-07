@@ -15,8 +15,14 @@ input is folded into a hidden number, shown as glyphs, which picks the three
 cards when "Draw three cards" is pressed. The "Tune" panel has sliders for the
 feel and can copy the current settings.
 
-Left out on purpose: the seal, the intention, the real reading, and all
-accessibility work.
+Each input also adds a stroke to a seal at the top of the screen: a path
+through nine points on a ring, straight for a beat and curved for a stir, with
+a tick on the rim for a sway of the phone. The ten most recent strokes are
+bright and earlier ones fade to a trace. Drawing adds three closing strokes and
+a bar across the end, and the seal enlarges.
+
+Left out on purpose: the intention, the real reading, and all accessibility
+work.
 
 Tilt is refused inside a claude.ai page. To test it, the file needs wrapping in
 a normal HTML document and serving from an ordinary HTTPS address.

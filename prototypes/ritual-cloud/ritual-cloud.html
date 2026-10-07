@@ -118,6 +118,55 @@
     pointer-events: none;
   }
 
+  /* The seal: a path through nine points on a ring, one stroke for each thing you do. */
+  .seal {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    width: 76px;
+    height: 76px;
+    translate: -50% 0;
+    transform-origin: top center;
+    transition: scale 600ms cubic-bezier(0.23, 1, 0.32, 1);
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .seal.sealed { scale: 1.5; }
+
+  .seal .ground { fill: rgb(0 0 0 / 0.6); }
+
+  .seal .ring {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 1.5;
+    stroke-dasharray: 1.5 4;
+    transition: stroke 600ms ease-out;
+  }
+
+  .seal.sealed .ring { stroke: var(--text); stroke-dasharray: none; }
+
+  .seal .stroke {
+    fill: none;
+    stroke: var(--text);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 320ms cubic-bezier(0.23, 1, 0.32, 1), opacity 600ms ease-out;
+  }
+
+  /* Earlier strokes stay as a faint trace under the most recent ones. */
+  .seal .stroke.old { opacity: 0.2; }
+
+  .seal.sealed .stroke.old { opacity: 0; }
+
+  .seal .tick { stroke: var(--accent-text); stroke-width: 1.6; stroke-linecap: round; }
+
+  .seal .mark { fill: none; stroke: var(--text); stroke-width: 2.4; stroke-linecap: round; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .seal, .seal .ring, .seal .stroke { transition: none; }
+  }
+
   .panel {
     position: absolute;
     top: 68px;
@@ -158,6 +207,14 @@
   <button type="button" class="ghost" id="tune-toggle" aria-expanded="false" aria-controls="tune">Tune</button>
 </div>
 
+<svg class="seal" id="seal" viewBox="-50 -50 100 100" aria-hidden="true">
+  <circle class="ground" r="49"></circle>
+  <circle class="ring" r="45"></circle>
+  <g id="seal-ticks"></g>
+  <g id="seal-strokes"></g>
+  <g id="seal-marks"></g>
+</svg>
+
 <div class="positions" id="positions" hidden>
   <span>Where I am</span>
   <span>How I should travel</span>
@@ -166,7 +223,7 @@
 
 <div class="bottom">
   <div class="number" id="number" aria-hidden="true"></div>
-  <p class="hint" id="hint">Tap for rhythm. Drag to stir. Every movement changes the number that picks your cards.</p>
+  <p class="hint" id="hint">Tap for rhythm. Drag to stir. Every movement changes the number that picks your cards, and adds a stroke to the seal.</p>
   <button type="button" class="ghost" id="tilt-ask" hidden>Let the cards feel you move</button>
   <button type="button" class="ghost" id="play" hidden>Play</button>
   <button type="button" class="primary" id="draw">Draw three cards</button>
@@ -202,6 +259,7 @@
     <label for="s-tilt">Tilt strength <output id="o-tilt"></output></label>
     <input type="range" id="s-tilt" min="0" max="3" step="0.05" value="1">
   </div>
+  <label class="check"><input type="checkbox" id="c-seal" checked> Show the seal</label>
   <label class="check"><input type="checkbox" id="c-number" checked> Show the hidden number</label>
   <label class="check"><input type="checkbox" id="c-paused"> Pause all motion</label>
   <p class="note" id="tilt-note"></p>
@@ -248,6 +306,17 @@
     }
     number.inputs++
     showNumber()
+    showHint()
+  }
+
+  const HINT = 'Tap for rhythm. Drag to stir. Every movement changes the number that picks your cards, and adds a stroke to the seal.'
+
+  // The instruction is for the first moment only; after that it would be in the way.
+  function showHint() {
+    const hint = $('hint')
+    if (paused) hint.textContent = 'Motion is paused. Press Play to let the cloud move.'
+    else hint.textContent = HINT
+    hint.hidden = !paused && (number.inputs > 0 || drawn !== null)
   }
 
   // Timing in millionths of a second where the browser allows it.
@@ -258,6 +327,102 @@
     for (let i = 0; i < 4; i++) out += GLYPHS[(number.a >>> (i * 4)) & 15]
     for (let i = 0; i < 4; i++) out += GLYPHS[(number.b >>> (i * 4)) & 15]
     $('number').textContent = out
+  }
+
+  // ---------------------------------------------------------------- the seal
+  // A path through nine points on a ring. A beat adds a straight stroke, a
+  // stir a curved one, a sway of the phone a tick on the rim. Where each
+  // stroke goes is read from the hidden number at that moment.
+  const SVG = 'http://www.w3.org/2000/svg'
+  const NODES = 9
+  const RECENT = 10 // strokes kept bright; earlier ones fade to a trace
+  const seal = { at: -1, strokes: 0, ticks: 0, sealed: false }
+
+  const node = (i) => {
+    const angle = (i / NODES) * Math.PI * 2 - Math.PI / 2
+    return [Math.cos(angle) * 36, Math.sin(angle) * 36]
+  }
+
+  function addMark(shape, attrs) {
+    const el = document.createElementNS(SVG, shape)
+    el.setAttribute('class', 'mark')
+    for (const key in attrs) el.setAttribute(key, attrs[key])
+    $('seal-marks').appendChild(el)
+  }
+
+  function addStroke(curved, value) {
+    if (seal.sealed) return
+    const v = value >>> 0
+    if (seal.at < 0) {
+      // The first thing you do sets where the seal begins, marked with a small circle.
+      seal.at = v % NODES
+      const [x, y] = node(seal.at)
+      addMark('circle', { cx: x, cy: y, r: 3.2 })
+    }
+    const next = (seal.at + 1 + ((v >>> 4) % (NODES - 1))) % NODES // never the same point
+    const [x1, y1] = node(seal.at)
+    const [x2, y2] = node(next)
+    let d = `M${x1.toFixed(1)} ${y1.toFixed(1)} L${x2.toFixed(1)} ${y2.toFixed(1)}`
+    if (curved) {
+      // Bow the stroke to one side of its straight line, by an amount from the number.
+      const bow = (((v >>> 9) % 2) * 2 - 1) * (10 + ((v >>> 11) % 16))
+      const length = Math.hypot(x2 - x1, y2 - y1) || 1
+      const cx = (x1 + x2) / 2 + (-(y2 - y1) / length) * bow
+      const cy = (y1 + y2) / 2 + ((x2 - x1) / length) * bow
+      d = `M${x1.toFixed(1)} ${y1.toFixed(1)} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${x2.toFixed(1)} ${y2.toFixed(1)}`
+    }
+    const path = document.createElementNS(SVG, 'path')
+    path.setAttribute('class', 'stroke')
+    path.setAttribute('d', d)
+    const group = $('seal-strokes')
+    group.appendChild(path)
+    // Draw the stroke on, from its start to its end.
+    const length = path.getTotalLength()
+    path.style.strokeDasharray = length
+    path.style.strokeDashoffset = length
+    path.getBoundingClientRect()
+    path.style.strokeDashoffset = 0
+
+    seal.at = next
+    seal.strokes++
+    const all = group.children
+    if (all.length > RECENT) all[all.length - RECENT - 1].classList.add('old')
+    if (all.length > 90) group.removeChild(all[0])
+  }
+
+  function addTick(value) {
+    if (seal.sealed || seal.ticks >= 36) return
+    seal.ticks++
+    const angle = ((value >>> 0) % 360) * (Math.PI / 180)
+    const line = document.createElementNS(SVG, 'line')
+    line.setAttribute('class', 'tick')
+    line.setAttribute('x1', (Math.cos(angle) * 41).toFixed(1))
+    line.setAttribute('y1', (Math.sin(angle) * 41).toFixed(1))
+    line.setAttribute('x2', (Math.cos(angle) * 48).toFixed(1))
+    line.setAttribute('y2', (Math.sin(angle) * 48).toFixed(1))
+    $('seal-ticks').appendChild(line)
+  }
+
+  /** The draw closes the seal: three last strokes, one for each card, then a bar across its end. */
+  function closeSeal() {
+    const random = seeded(number.b, number.a)
+    for (let i = 0; i < 3; i++) addStroke(i === 1, Math.floor(random() * 4294967296))
+    const [x, y] = node(seal.at)
+    const length = Math.hypot(x, y)
+    const tx = (-y / length) * 6
+    const ty = (x / length) * 6
+    addMark('line', { x1: x - tx, y1: y - ty, x2: x + tx, y2: y + ty })
+    seal.sealed = true
+    $('seal').classList.add('sealed')
+  }
+
+  function resetSeal() {
+    for (const id of ['seal-strokes', 'seal-ticks', 'seal-marks']) $(id).textContent = ''
+    seal.at = -1
+    seal.strokes = 0
+    seal.ticks = 0
+    seal.sealed = false
+    $('seal').classList.remove('sealed')
   }
 
   function seeded(seedA, seedB) {
@@ -464,7 +629,7 @@
     }
   }
 
-  const pointer = { down: false, x: 0, y: 0, hoverX: 0, hoverY: 0 }
+  const pointer = { down: false, x: 0, y: 0, hoverX: 0, hoverY: 0, travel: 0 }
 
   canvas.addEventListener('pointerdown', (event) => {
     if (drawn) return
@@ -473,7 +638,9 @@
     pointer.x = event.clientX
     pointer.y = event.clientY
     aim(event.clientX, event.clientY)
+    pointer.travel = 0
     fold(1, moment(), event.clientX, event.clientY)
+    addStroke(false, number.a)
     pulse(1)
   })
 
@@ -490,6 +657,12 @@
     pointer.y = event.clientY
     aim(event.clientX, event.clientY)
     fold(2, moment(), event.clientX, event.clientY)
+    // A long stir earns a curved stroke for every stretch of travel.
+    pointer.travel += Math.hypot(event.movementX || dx / scale, event.movementY || dy / scale)
+    if (pointer.travel > 220) {
+      pointer.travel = 0
+      addStroke(true, number.a)
+    }
     stir(dx * 0.05, dy * 0.05)
   })
 
@@ -508,6 +681,7 @@
     const arrow = ARROWS[event.key]
     if (arrow) stir(arrow[0] * 0.12, arrow[1] * 0.12)
     else if (!event.repeat) pulse(1)
+    if (!event.repeat) addStroke(!!arrow, number.a)
   })
 
   // ---------------------------------------------------------------- tilt
@@ -527,6 +701,7 @@
     if (now - tilt.lastFold > 250 && Math.hypot(tilt.tx - tilt.x, tilt.ty - tilt.y) > 0.06 && !drawn) {
       tilt.lastFold = now
       fold(4, moment(), tilt.tx * 1000, tilt.ty * 1000)
+      addTick(number.a)
     }
   }
 
@@ -585,19 +760,26 @@
 
   $('draw').addEventListener('click', () => {
     if (drawn) {
+      // A new shuffle is a new rite: the number and the seal both start again.
       drawn = null
+      number.a = 0x811c9dc5
+      number.b = 0x01000193
+      number.inputs = 0
+      resetSeal()
+      showNumber()
+      showHint()
       $('draw').textContent = 'Draw three cards'
       $('positions').hidden = true
-      $('hint').hidden = false
       canvas.focus({ preventScroll: true })
       return
     }
     // Pressing draw is itself an input, so even one press gives a number that is yours.
     fold(5, moment())
     drawn = pickThree()
+    closeSeal()
     $('draw').textContent = 'Shuffle again'
     $('positions').hidden = false
-    $('hint').hidden = true
+    showHint()
     placeLabels()
   })
 
@@ -743,14 +925,14 @@
     $('tune-toggle').textContent = open ? 'Close' : 'Tune'
   })
 
+  $('c-seal').addEventListener('change', (event) => { $('seal').hidden = !event.target.checked })
   $('c-number').addEventListener('change', (event) => { $('number').hidden = !event.target.checked })
 
   function setPaused(value) {
     paused = value
     $('c-paused').checked = value
     $('play').hidden = !value
-    if (value) $('hint').textContent = 'Motion is paused. Press Play to let the cloud move.'
-    else $('hint').textContent = 'Tap for rhythm. Drag to stir. Every movement changes the number that picks your cards.'
+    showHint()
   }
 
   $('c-paused').addEventListener('change', (event) => setPaused(event.target.checked))
