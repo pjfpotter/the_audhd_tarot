@@ -33,9 +33,9 @@
 
 ## 5. Accessibility options
 
-- [ ] 5.1 Build the options panel on a native `<dialog>` with radio groups for theme (Match my device, Light, Dark), motion (Match my device, Reduced) and four text sizes up to at least 150%; verify by e2e that each choice takes effect immediately
-- [ ] 5.2 Verify by e2e that the panel opens from every screen, traps focus, closes on Escape, returns focus to its opener, and leaves a reading in progress unchanged
-- [ ] 5.3 Verify by e2e that at the largest text size on a 320px viewport every screen shows all text with vertical scrolling only
+- [x] 5.1 Build the options panel on a native `<dialog>` with radio groups for theme (Match my device, Light, Dark), motion (Match my device, Reduced) and four text sizes up to at least 150%; verify by e2e that each choice takes effect immediately
+- [x] 5.2 Verify by e2e that the panel opens from every screen, traps focus, closes on Escape, returns focus to its opener, and leaves a reading in progress unchanged
+- [x] 5.3 Verify by e2e that at the largest text size on a 320px viewport every screen shows all text with vertical scrolling only
 
 ## 6. Draw and reading
 
