@@ -1,0 +1,614 @@
+{
+  "source": "https://drop-a964c8a2-030.pjpotter.workers.dev/",
+  "cards": [
+    {
+      "n": 0,
+      "name": "The Fool",
+      "aliases": [
+        "Le Mat",
+        "The Defeated"
+      ],
+      "icon": "BINDLE STICK\n+ LEAPING DOG",
+      "essence": "The already-defeated one who walks anyway — off the board, unnumbered, going again regardless of what the previous journeys cost.",
+      "question": "Which Fool is speaking? The Reckless one who mistakes returning energy for recovery, or the Whimsical one you've been trained to ignore?",
+      "unities": [
+        {
+          "anchor": "Gaze upward",
+          "superpower": "Lofty ideals, lifelong curiosity",
+          "trap": "Body-blind; the drag back to material reality lands as shock"
+        },
+        {
+          "anchor": "The walking stick",
+          "superpower": "Creative wand, the entertainer's instrument",
+          "trap": "Cane covering the injuries of every previous start"
+        },
+        {
+          "anchor": "The bindle",
+          "superpower": "Beginner's mind, the capacity to go again",
+          "trap": "Failure to integrate; starting from zero every time"
+        },
+        {
+          "anchor": "Bells and motley",
+          "superpower": "The satirist's real office, licence to say the unsayable",
+          "trap": "Public exposure when the mask fails"
+        },
+        {
+          "anchor": "The open face",
+          "superpower": "Radical trust, absence of defensive cynicism",
+          "trap": "The Fool is also the one who can be fooled"
+        }
+      ]
+    },
+    {
+      "n": 1,
+      "name": "The Magician",
+      "aliases": [
+        "Le Bateleur",
+        "The Juggler"
+      ],
+      "icon": "WIZARD'S HAT",
+      "essence": "The dazzling kid who's found the one place the world claps for a brain like theirs — and has spread every tool they own out on the table to prove it.",
+      "question": "Are you performing your intelligence because you love it, or because you've learned it's the only thing that gets you loved?",
+      "unities": [
+        {
+          "anchor": "The table full of tools and objects",
+          "superpower": "Genuine mastery — light-years ahead in the things you've chosen, and the joy of showing off what you know is real and infectious",
+          "trap": "The tools become props in a performance rather than instruments of curiosity"
+        },
+        {
+          "anchor": "The confident, unmodest stance",
+          "superpower": "A shameless, delighted belief in your own brilliance — rare, and worth protecting",
+          "trap": "The identity fuses to being 'the clever one,' and curiosity gets replaced by the need to be seen as smart"
+        },
+        {
+          "anchor": "The hidden shyness under the showman's posture",
+          "superpower": "A rich, private inner world that the performance is only the visible tip of",
+          "trap": "Crushing self-doubt living in the same body as the swagger, at the same time, unresolved"
+        }
+      ]
+    },
+    {
+      "n": 2,
+      "name": "La Papesse",
+      "aliases": [
+        "The High Priestess"
+      ],
+      "icon": "CROWN + VINES\nON A CLOSED BOOK",
+      "essence": "The one who found a whole universe inside her books and stopped needing the one outside — and honestly, why would she leave, when in here everything finally makes sense.",
+      "question": "Is the room peaceful because you're safe in it, or because you've stopped believing anywhere else could be?",
+      "unities": [
+        {
+          "anchor": "The vivid, detailed crown against the plain backdrop",
+          "superpower": "Total immersion — grokking a subject completely, building a rich internal world nobody else has access to",
+          "trap": "The internal world becomes so much richer than the external one that reality stops looking worth the trip"
+        },
+        {
+          "anchor": "The books, the robed and covered figure",
+          "superpower": "Deep-dive learning: fast, complete, genuinely joyful absorption in a subject",
+          "trap": "A permanent research phase — perpetually preparing, never finishing, never bringing anything back out"
+        },
+        {
+          "anchor": "The pale, indoor stillness",
+          "superpower": "Restfulness — a nervous system that has finally found somewhere it doesn't have to defend itself",
+          "trap": "Cloistering as a permanent address instead of a place to visit"
+        }
+      ]
+    },
+    {
+      "n": 3,
+      "name": "The Empress",
+      "aliases": [
+        "L'Impératrice"
+      ],
+      "icon": "HALF-FLEDGED\nPHOENIX, MID-RISE",
+      "essence": "The one who came alive after dark — fearless, magnetic, and finally, blessedly, unbothered by what anyone thinks of her.",
+      "question": "Is this power yours yet, or are you still just holding something enormous you haven't learned to carry?",
+      "unities": [
+        {
+          "anchor": "The rising sceptre",
+          "superpower": "Fearless directness that reads to everyone in the room as confidence — because it is confidence, no permission required",
+          "trap": "The same all-in intensity that makes her magnetic doesn't know when to stop"
+        },
+        {
+          "anchor": "The half-formed phoenix",
+          "superpower": "Enormous creative and sexual power, alive and growing",
+          "trap": "Power not yet integrated — easier to be swept up by than to steer"
+        },
+        {
+          "anchor": "The night-time setting",
+          "superpower": "The inversion: a world running on stamina, sensation and nerve instead of daytime rules, where she finally has the advantage",
+          "trap": "A total absence of the shame mechanism others have internalised, which reads as fearlessness but leaves no built-in brakes"
+        }
+      ]
+    },
+    {
+      "n": 4,
+      "name": "The Emperor",
+      "aliases": [
+        "L'Empereur"
+      ],
+      "icon": "CROWN ATOP\nCROSSED SCEPTRES",
+      "essence": "The confident, put-together man everyone gets measured against — proof, mostly, of how much of 'normal' was never built with you in mind.",
+      "question": "Whose template are you trying to fit, and did anyone actually check it was built for a body like yours?",
+      "unities": [
+        {
+          "anchor": "The grey hair, the full control",
+          "superpower": "A genuinely useful mirror — naming him clearly is the first step to no longer absorbing him unconsciously",
+          "trap": "You can name the whole game and still lose to it, because the daytime world is built in his image regardless"
+        },
+        {
+          "anchor": "The crossed but ready-to-stand legs",
+          "superpower": "He shows you exactly what 'arrived' is supposed to look like, which is genuinely useful information",
+          "trap": "Believing you should look like that in order to have arrived at all"
+        },
+        {
+          "anchor": "His stillness — he doesn't need to notice you to shape you",
+          "superpower": "Once you see his power doesn't require your participation, you can stop performing for an audience that was never watching",
+          "trap": "He's patient — waiting quietly through every clever workaround you think you've found"
+        }
+      ]
+    },
+    {
+      "n": 5,
+      "name": "Le Pape",
+      "aliases": [
+        "The Hierophant",
+        "The Pope"
+      ],
+      "icon": "CROSSED\nPAPAL KEYS",
+      "essence": "The system that finally explained everything — and the sheer relief, for a pattern-hungry brain, of a cosmology that actually adds up.",
+      "question": "Did you find the truth, or did you find the first system rigid enough to feel like one?",
+      "unities": [
+        {
+          "anchor": "The preaching stance, the sermon",
+          "superpower": "The genuine gift of total commitment — understanding a framework deeply enough to live inside its logic completely",
+          "trap": "Certainty mistaken for truth; not noticing when the framework you found is just another cage shaped like an answer"
+        },
+        {
+          "anchor": "The audience, the urge to share",
+          "superpower": "If it's true, sharing it isn't dogmatism — it's generosity, and the urge to spread relief is a kind thing",
+          "trap": "Not everyone is looking for the same complete system; urgency tips into missionary certainty"
+        },
+        {
+          "anchor": "The sacred framework itself",
+          "superpower": "Finding rules that finally make internal sense, after years of rules that didn't, is real peace, hard-won",
+          "trap": "Mistaking a system that tells you what's wrong with the world for one that tells you what's wrong with you"
+        }
+      ]
+    },
+    {
+      "n": 6,
+      "name": "The Lovers",
+      "aliases": [
+        "Les Amoureux"
+      ],
+      "icon": "HEART\nPIERCED BY ARROW",
+      "essence": "The moment the self meets the other — and finds out, against a lifetime of being told otherwise, that its people were out there all along.",
+      "question": "Are you loving with your whole depth, or building a fortress around one person and calling it love?",
+      "unities": [
+        {
+          "anchor": "The two flanking figures pulling at the central one",
+          "superpower": "An almost supernatural ability to find your people — even undiagnosed, even against the odds, your kind finds your kind",
+          "trap": "Getting pulled between competing versions of who you 'should' be before you've worked out which voice is actually yours"
+        },
+        {
+          "anchor": "Eros above, piercing the heart",
+          "superpower": "When you love, you love completely — deep, loyal, and rarer than most people ever get to experience",
+          "trap": "The same completeness tips into fusing your whole identity to one person, and losing yourself in the process"
+        },
+        {
+          "anchor": "The figure still gazing at the mother while being claimed by the partner",
+          "superpower": "Real emotional intensity and an enormous capacity for closeness",
+          "trap": "Confusing the fantasy you've fixated on for the obvious, real signal standing right in front of you"
+        }
+      ]
+    },
+    {
+      "n": 7,
+      "name": "The Chariot",
+      "aliases": [
+        "Le Chariot"
+      ],
+      "icon": "ORNATE WHEEL,\nSMALL CROWN ON TOP",
+      "essence": "Three coffees in, firing on all cylinders, building something extraordinary while the rest of the world wonders how on earth you did it.",
+      "question": "Is this flow, or is this the fire you'll spend three days recovering from?",
+      "unities": [
+        {
+          "anchor": "The armour",
+          "superpower": "Feeling fully defended and certain — ready to build, ready to argue for what you're making, unstoppable in the moment",
+          "trap": "The armour also stops anyone, including you, from noticing the cost building up underneath it"
+        },
+        {
+          "anchor": "The mismatched horses",
+          "superpower": "The chosen-one feeling of a real flow state — brain moving fast, building huge complex patterns other brains can't touch",
+          "trap": "The chariot isn't actually moving forward the way it looks; sprinting hard doesn't always mean travelling anywhere"
+        },
+        {
+          "anchor": "The smiling and sad faces on the shoulders",
+          "superpower": "A theatrical, larger-than-life relationship with your own story — you get to be the hero",
+          "trap": "The flip side of epic hero is epic failure, and there's rarely a middle setting"
+        }
+      ]
+    },
+    {
+      "n": 8,
+      "name": "Justice",
+      "aliases": [
+        "La Justice"
+      ],
+      "icon": "SCALES",
+      "essence": "The one who cannot let an unfair thing lie — because an open loop, once you've spotted the unfairness in it, does not close itself.",
+      "question": "Is this clarity serving the world, or is being right quietly becoming more important than being loved?",
+      "unities": [
+        {
+          "anchor": "The sword",
+          "superpower": "A sharp, rapid ability to map how systems empower some people and disempower others — genuinely useful, genuinely rare",
+          "trap": "The same sharpness turned inward becomes a verdict on yourself: proof you're part of the machine you're angry at"
+        },
+        {
+          "anchor": "The scales",
+          "superpower": "A real, principled refusal to look away from unfairness",
+          "trap": "Losing interest in things — school, work, whole institutions — the moment you decide the game is rigged"
+        },
+        {
+          "anchor": "The steady, unflinching gaze",
+          "superpower": "Conviction — once you've found your position, you hold it",
+          "trap": "Holding it so hard it costs you the relationship, when being understood would have served you better than being right"
+        }
+      ]
+    },
+    {
+      "n": 9,
+      "name": "The Hermit",
+      "aliases": [
+        "L'Hermite"
+      ],
+      "icon": "LANTERN",
+      "essence": "The one who's been through it, come out the other side with a lantern full of hard-won knowledge, and gone looking for someone to hand it to.",
+      "question": "Are you resting, or have you quietly decided the cave is safer than ever coming back out?",
+      "unities": [
+        {
+          "anchor": "The lantern",
+          "superpower": "Wisdom worth sharing — the wounded healer, turning your own hard road into something that lights someone else's",
+          "trap": "Solitude prescribed as the cure can tip into isolation prescribed as the whole identity"
+        },
+        {
+          "anchor": "The walking stick",
+          "superpower": "You've survived the damage and you're still walking, knowledge intact",
+          "trap": "The injuries are real, and moving slowly doesn't mean they're healed"
+        },
+        {
+          "anchor": "The cloak",
+          "superpower": "Recognising when your social battery needs recharging, and being unapologetic about taking it",
+          "trap": "For the ADHD half of you, too much alone time doesn't recharge — it just gets lonely, quietly, without you clocking it"
+        }
+      ]
+    },
+    {
+      "n": 10,
+      "name": "Wheel of Fortune",
+      "aliases": [
+        "La Roue de Fortune"
+      ],
+      "icon": "PAIR OF DICE\nMID-TUMBLE",
+      "essence": "Licking your wounds just long enough before the itch to spin the wheel again gets too loud to ignore.",
+      "question": "Is the thrill of the spin calling you forward, or are you spinning because sitting still has started to feel unbearable?",
+      "unities": [
+        {
+          "anchor": "The wheel itself",
+          "superpower": "A genuine love of the game — the moment of adventure that makes you feel most alive, most switched-on, least alienated",
+          "trap": "Crisis-seeking as a way of life; loving change so much you manufacture it even when things were fine"
+        },
+        {
+          "anchor": "The figures riding up and down",
+          "superpower": "ADHD wired for exactly this: thriving in change, extremes, high stakes",
+          "trap": "Autistic terror of the same unpredictability, pulling in the opposite direction at the same time"
+        },
+        {
+          "anchor": "The turning motion",
+          "superpower": "The willingness to get back in the game after a real loss — real resilience, not denial",
+          "trap": "Never spinning at all — staying in the Hermit's cave because the wheel feels too dangerous to touch"
+        }
+      ]
+    },
+    {
+      "n": 11,
+      "name": "Force",
+      "aliases": [
+        "Strength",
+        "La Force"
+      ],
+      "icon": "FLEXED BICEP",
+      "essence": "The quiet, staggering strength it takes just to run a brain like this — invisible to everyone who's never had to do it.",
+      "question": "Do you know how much internal labour you do every single day, or has it become so automatic you've stopped counting it as strength at all?",
+      "unities": [
+        {
+          "anchor": "The calm face holding open the lion's mouth",
+          "superpower": "An enormous, largely invisible daily strength — the sheer self-monitoring and regulation it takes to function, done without flinching",
+          "trap": "Because it's invisible, nobody else clocks the cost either — including you, until you crash"
+        },
+        {
+          "anchor": "The lion itself",
+          "superpower": "The power to channel raw, unruly energy — sexual, creative, whatever form it takes — into something directed and useful",
+          "trap": "The refining takes real effort every time; it never becomes fully automatic no matter how practised you get"
+        },
+        {
+          "anchor": "The confidence in her expression",
+          "superpower": "You know, better than most, that the internal work matters and has to be done",
+          "trap": "Believing it's entirely on you to fix, alone, in the dark, without help"
+        }
+      ]
+    },
+    {
+      "n": 12,
+      "name": "The Hanged Man",
+      "aliases": [
+        "Le Pendu"
+      ],
+      "icon": "INVERTED\nANCHOR",
+      "essence": "Upside down by choice, waiting for the rope to break in its own time — not stuck, exactly, more like paused on purpose.",
+      "question": "Have you actually accepted being here, or are you performing acceptance while quietly furious you're still stuck?",
+      "unities": [
+        {
+          "anchor": "The bent leg",
+          "superpower": "A body finding its own rhythm even in stillness — a kind of stimming, a kind of self-regulation",
+          "trap": "The stillness can be mistaken, by you and everyone else, for having no forward motion at all"
+        },
+        {
+          "anchor": "The hands tied behind the back",
+          "superpower": "Sometimes surrender really is the move — accepting you can't force the next step and letting it come",
+          "trap": "Time blindness means the same loop repeats without you noticing you've been here before"
+        },
+        {
+          "anchor": "The trees forming the frame",
+          "superpower": "Growth still happening, even upside-down, even in the dark",
+          "trap": "Pretending you're not stuck at all, and refusing to do the deep work that would actually free you"
+        }
+      ]
+    },
+    {
+      "n": 13,
+      "name": "Death",
+      "aliases": [
+        "The Unnamed Arcanum",
+        "Arcane Sans Nom"
+      ],
+      "icon": "SKULL",
+      "essence": "Standing in the ruins of a chapter that's ending, grieving hard — and somewhere underneath the wreckage, already compost for what grows next.",
+      "question": "What are you refusing to cut away, and what would it cost you to keep it?",
+      "unities": [
+        {
+          "anchor": "The black soil, la negrita",
+          "superpower": "Reinvention — deliberately building a new version of yourself for the next phase of life, done consciously, again and again",
+          "trap": "You spend real time wallowing in the black stuff before anything grows from it, and there's no shortcut through that part"
+        },
+        {
+          "anchor": "The severed, crowned heads",
+          "superpower": "Even consciousness itself can be composted and regrown into something better",
+          "trap": "We grieve longer and harder than most, and letting go, when it's time, is genuinely one of the hardest things we do"
+        },
+        {
+          "anchor": "The scythe",
+          "superpower": "Real, decisive editing — cutting away what's not working instead of endlessly adding to it",
+          "trap": "Reversed, this becomes refusing to simplify, refusing to let anything go, scope-creeping your own life"
+        }
+      ]
+    },
+    {
+      "n": 14,
+      "name": "Temperance",
+      "aliases": [
+        "La Tempérance"
+      ],
+      "icon": "TWO JUGS,\nFIGURE-EIGHT WATER",
+      "essence": "The angel who's learned, slowly and with real effort, how to let two different states of you flow into each other instead of crashing between them.",
+      "question": "Are you managing your energy, or just white-knuckling until the next crash?",
+      "unities": [
+        {
+          "anchor": "The two jugs pouring into each other",
+          "superpower": "Learning to move deliberately between nervous system states — upshifting, downshifting, on purpose rather than by accident",
+          "trap": "It takes real, constant, unglamorous effort; it never becomes fully automatic"
+        },
+        {
+          "anchor": "The wings",
+          "superpower": "A sustainable flow instead of a sprint — the version of productivity that doesn't cost three recovery days afterward",
+          "trap": "Sustainable is quieter and less thrilling than the Chariot's rush, and can feel like giving something up"
+        },
+        {
+          "anchor": "The angel's calm expression",
+          "superpower": "The decaf-coffee wisdom — small, unglamorous choices that protect you from your own excesses",
+          "trap": "Easy to override in the moment when the Chariot's charge feels so much more exciting"
+        }
+      ]
+    },
+    {
+      "n": 15,
+      "name": "The Devil",
+      "aliases": [
+        "Le Diable"
+      ],
+      "icon": "BROKEN\nCHAIN LINK",
+      "essence": "The one cast as the monster for refusing hierarchies that were never built to include you — creative, uncanny, and completely unbothered by being called wrong.",
+      "question": "Is this rebellion building something, or is it revenge dressed up as freedom?",
+      "unities": [
+        {
+          "anchor": "The hermaphrodite figure",
+          "superpower": "A carnal, whole embodiment of both — desire and identity refusing to be split down a line someone else drew",
+          "trap": "Being cast as evil or dangerous just for existing outside the lines can curdle into believing it yourself"
+        },
+        {
+          "anchor": "The chained figures",
+          "superpower": "Deep creative material lives in the parts of yourself that scare you, and going there is genuinely valuable work",
+          "trap": "The same subconscious force that creates can also destroy, including turning on yourself"
+        },
+        {
+          "anchor": "The counter-cultural stance",
+          "superpower": "Gleeful, genuine love of things 'normal' people hate — real joy in your own strange taste, no apology",
+          "trap": "Sometimes the impulse isn't joy at all — it's exhaustion with masking curdling into a pure desire to burn it all down"
+        }
+      ]
+    },
+    {
+      "n": 16,
+      "name": "The Tower",
+      "aliases": [
+        "La Maison Dieu"
+      ],
+      "icon": "LIGHTNING-STRUCK\nTOWER",
+      "essence": "The old self-image finally blown apart — painful, sudden, and the only reason the trapped energy underneath ever gets to move again.",
+      "question": "What system just collapsed, and what does it free you to build instead?",
+      "unities": [
+        {
+          "anchor": "The falling figures",
+          "superpower": "Hitting real ground is disorienting, but it's also the first honest information you've had in a long time",
+          "trap": "The fall genuinely hurts, and recovery takes real time you can't rush"
+        },
+        {
+          "anchor": "The balls of colour raining down",
+          "superpower": "Energy that was trapped in a system that wasn't serving you, finally released and available to use",
+          "trap": "Release isn't gentle — it comes as catastrophe first, usefulness later"
+        },
+        {
+          "anchor": "The exploding tower itself",
+          "superpower": "Sometimes the only way to get unstuck is for the whole structure to come down at once",
+          "trap": "You don't get to choose the timing, and it rarely happens on a day you were ready for it"
+        }
+      ]
+    },
+    {
+      "n": 17,
+      "name": "The Star",
+      "aliases": [
+        "L'Étoile"
+      ],
+      "icon": "EIGHT-POINTED STAR\nOVER A POURING JUG",
+      "essence": "A rare, earned moment of peace after the underworld — someone stroking your hair, telling you you've been very brave, and for once, you believe it.",
+      "question": "Can you let yourself rest here, or does part of you think peace has to be justified first?",
+      "unities": [
+        {
+          "anchor": "Emptying the jugs into the river",
+          "superpower": "Individual water joining collective water — your healing becoming part of something bigger than just you",
+          "trap": "The peace is real but it's rare; the scanning brain doesn't stay quiet for long"
+        },
+        {
+          "anchor": "The soft light, the stars",
+          "superpower": "For a meaning-hungry brain, this is the moment the veil rolls back and the universe's pattern becomes visible, whole, and kind",
+          "trap": "You can't manufacture this moment on demand, no matter how much you want to"
+        },
+        {
+          "anchor": "The new growth in the background",
+          "superpower": "Proof that healing is actually happening, visibly, after everything you've been through",
+          "trap": "Easy to mistake one good night under the stars for having arrived, rather than one stop along the way"
+        }
+      ]
+    },
+    {
+      "n": 18,
+      "name": "The Moon",
+      "aliases": [
+        "La Lune"
+      ],
+      "icon": "CRESCENT MOON OVER\nA RISING CRUSTACEAN",
+      "essence": "The secret school hidden after dark, where the softer, stranger, more unmasked version of you finally gets to come out and play.",
+      "question": "Is the night giving you rest, or somewhere to hide from a daytime you've given up on?",
+      "unities": [
+        {
+          "anchor": "The crustacean in the water",
+          "superpower": "Deep self-knowledge, right down to the oldest, least-verbal parts of the nervous system",
+          "trap": "Some of what lives down there is genuinely hard to look at, and staying under too long has its own cost"
+        },
+        {
+          "anchor": "The dogs",
+          "superpower": "The mammalian brain's own wisdom, softer and more intuitive than the daytime analytical mind",
+          "trap": "The trap here is quiet and honest: forgetting to come back and live in the real world at all"
+        },
+        {
+          "anchor": "The moonlight itself",
+          "superpower": "Moon child energy — a little fey, a little of the night, reclaimed as something to be proud of rather than pathologised",
+          "trap": "The reduced demands of night-time are real relief, but they're not a substitute for daytime life"
+        }
+      ]
+    },
+    {
+      "n": 19,
+      "name": "The Sun",
+      "aliases": [
+        "Le Soleil"
+      ],
+      "icon": "RADIANT SUNBURST\n(NO FACE)",
+      "essence": "Staggering back out into the light after the underworld, wobbly, glowed-up, and unmistakably alive.",
+      "question": "What did you bring back with you, and are you ready to actually share it?",
+      "unities": [
+        {
+          "anchor": "The two figures, one steadier than the other",
+          "superpower": "Survivor joy — the exact, specific rush of powers coming back that you weren't sure would ever return",
+          "trap": "One side of you still struggles while the other cheers it on; recovery isn't even across the whole system at once"
+        },
+        {
+          "anchor": "The tail on one figure",
+          "superpower": "You made it out of the underworld and it shows — you've had a glow-up, and you've earned every bit of it",
+          "trap": "Still a little wobbly on your feet; the recovery is real but not yet complete"
+        },
+        {
+          "anchor": "The warmth of the sun itself",
+          "superpower": "This is the reason you come back to reality at all — good days, real people, new understanding worth sharing",
+          "trap": "It would be easy to stay in the soft underworld forever; the Sun is the pull back that some part of you resists"
+        }
+      ]
+    },
+    {
+      "n": 20,
+      "name": "Judgement",
+      "aliases": [
+        "Le Jugement"
+      ],
+      "icon": "TRUMPET",
+      "essence": "The trumpet call for the thing you dragged back from the underworld — proof the internal work was never just for you.",
+      "question": "Is what you're bringing back part of something bigger, or is it still just for you?",
+      "unities": [
+        {
+          "anchor": "The trumpet",
+          "superpower": "Our need to find new things in the dark and bring them into the light is a genuine, valuable creative force — oppressed communities innovate because they have to",
+          "trap": "You can make the whole underworld journey and still come back empty-handed; it's not entirely in your control"
+        },
+        {
+          "anchor": "The strange blue spirit",
+          "superpower": "What gets born from this work is genuinely new — not expected, something the world hasn't seen before",
+          "trap": "Something that strange and new can be hard for anyone, including you, to recognise as valuable at first"
+        },
+        {
+          "anchor": "The golden letterbox",
+          "superpower": "The internal work finding an external, corporeal form — actually launching the thing rather than just discovering it",
+          "trap": "It only completes if something bigger than you meets it halfway; you can't force the contract alone"
+        }
+      ]
+    },
+    {
+      "n": 21,
+      "name": "The World",
+      "aliases": [
+        "Le Monde"
+      ],
+      "icon": "OPEN OVAL WREATH,\nRIBBON SPINNING INSIDE",
+      "essence": "The whole journey held at once — every part of you, all four forces balanced, dancing at the centre of something genuinely, gorgeously whole.",
+      "question": "Can you hold the whole of what you are as one thing worth celebrating, rather than a set of parts to manage?",
+      "unities": [
+        {
+          "anchor": "The four figures in the corners — angel, eagle, lion, ox",
+          "superpower": "Every part of you — compassion, intellect, creative and sexual power, material stability — present and balanced at once",
+          "trap": "Believing you need to keep them in perfect balance permanently, rather than letting them naturally take turns"
+        },
+        {
+          "anchor": "The wreath",
+          "superpower": "Total, unapologetic creative and erotic power, worth celebrating rather than hiding",
+          "trap": "A meaning-saturated universe is euphoric, but the pattern-hungry brain can just as easily flip into believing nothing means anything at all"
+        },
+        {
+          "anchor": "The dancing central figure",
+          "superpower": "Bottom-up thinking's real gift — building up to the epic scale from the ground, rather than failing to see the big picture at all",
+          "trap": "The scale of this vision can make ordinary daily life feel small and disappointing by comparison"
+        }
+      ]
+    }
+  ]
+}

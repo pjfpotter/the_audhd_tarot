@@ -1,0 +1,27 @@
+// What each card image in public/cards/ shows, in plain language and without
+// interpretation. These describe the current placeholder art (a printed
+// Lequart, Paris deck) and must be rewritten when the art is replaced.
+export const imageDescriptions: Readonly<Record<number, string>> = {
+  0: 'A bearded man in a jester\'s cap and a collar hung with bells strides to the right, looking up. He carries a bundle on a stick over his shoulder and leans on a walking staff. A pale animal leaps up behind him and claws at his torn breeches. Printed title: Le Mat.',
+  1: 'A young person with curly blond hair and a very wide-brimmed hat stands behind a table, holding up a short rod in one hand and a small round object in the other. On the table are cups, small balls, two knives and a bag. Printed title: Le Bateleur.',
+  2: 'A woman with grey hair stands barefoot on clouds, one arm raised with a finger pointing up and the other pointing down. A striped scarf billows behind her and two peacocks stand at her feet. Printed title: Junon.',
+  3: 'A crowned woman sits facing forward on a high-backed throne. One arm rests on a shield bearing a yellow eagle; the other hand holds a sceptre topped with an orb and cross. Printed title: L\'Impératrice.',
+  4: 'A bearded man in a crowned helmet, seen in profile facing left, leans against a throne with one leg crossed over the other. He holds out a sceptre topped with an orb and cross. A shield bearing a yellow eagle rests on the ground beside him. Printed title: L\'Empereur.',
+  5: 'A bearded, almost naked man stands on the back of an eagle among clouds, a striped length of cloth swirling around him. He grips a bundle of thunderbolts in each hand, one raised above his head. Printed title: Jupiter.',
+  6: 'A young man in a striped tunic stands between two women: an older one in a blue hat with her hand on his shoulder, and a younger one with long blond hair. Above them a winged child in a blazing sun aims an arrow downward. Printed title: L\'Amoureux.',
+  7: 'A crowned figure in armour, with a face on each shoulder piece, stands holding a sceptre in a square chariot under a draped canopy on four posts. Two horses, one dark red and one pale, pull it and look in slightly different directions. Printed title: Le Chariot.',
+  8: 'A crowned woman sits facing forward with a steady gaze, holding an upright sword in one hand and a pair of scales in the other. The posts of her throne rise behind her shoulders. Printed title: La Justice.',
+  9: 'An old bearded man in a heavy hooded cloak walks to the left, holding a small lantern up in front of his face and leaning on a staff. Printed title: L\'Hermite.',
+  10: 'A six-spoked wheel with a crank handle stands on a wooden frame. One animal in clothes climbs up one side, another hangs head-down on the other side, and on a platform at the top sits a crowned, winged creature holding a sword. Printed title: La Roue de Fortune.',
+  11: 'A woman in a wide-brimmed hat stands calmly holding open the jaws of a large lion with her bare hands. The lion is at her side, its head tipped up towards her. Printed title: La Force.',
+  12: 'A man hangs upside down by one ankle from a beam set between two tree trunks with their branches lopped off. His free leg is bent behind the other, his hands are behind his back, and his face is calm. Printed title: Le Pendu.',
+  13: 'A skeleton bends over a scythe, mowing a field. Hands, feet and bones lie scattered among the plants, and two heads rest on the ground, one of them wearing a crown. The card has a number but no printed title.',
+  14: 'A winged woman with a flower in her hair stands holding two jugs, one in each hand, tilting one towards the other. Printed title: Tempérance.',
+  15: 'A figure with bat wings, antlers, breasts and clawed feet stands on a low pedestal, tongue out, one hand raised and the other holding a staff. Two smaller horned figures stand either side with their hands behind their backs, tied by ropes from their necks to a ring on the pedestal. Printed title: Le Diable.',
+  16: 'A brick tower is struck from above by a plume of fire, and its crown-shaped top is knocked off. Two people fall headlong to the ground at its foot, and coloured balls fill the air around it. Printed title: La Maison Dieu.',
+  17: 'A naked woman with long hair kneels at the edge of a pool, pouring water from two jugs. Above her are eight stars, one much larger than the rest, and a small bird perches on a bush behind her. Printed title: L\'Étoile.',
+  18: 'A moon with a face in profile shines with pointed rays, and droplets hang in the air beneath it. Two dogs, one blue and one red-brown, howl up at it between two towers. In a pool in the foreground is a crayfish. Printed title: La Lune.',
+  19: 'A large sun with a face sends out straight and wavy rays, and droplets fall from it. Beneath it two children in loincloths stand with their arms around each other in front of a low brick wall. Printed title: Le Soleil.',
+  20: 'An angel leans out of a cloud ringed with rays, blowing a long trumpet hung with a flag bearing a cross. Below, a naked figure seen from behind rises from an open tomb, between a woman and a man who press their hands together. Printed title: Le Jugement.',
+  21: 'A naked figure with long hair and a trailing scarf dances inside an oval wreath of leaves, holding a short baton. In the four corners are an angel, an eagle, a bull and a lion. Printed title: Le Monde.',
+}

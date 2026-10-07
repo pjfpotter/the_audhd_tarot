@@ -2,18 +2,18 @@
 
 ## 1. Project scaffold
 
-- [ ] 1.1 Scaffold a Vite + React + TypeScript app at the repository root (package name `the-audhd-tarot`), replacing the empty `package-lock.json`; verify `npm run dev` serves a page and `npm run build` produces `dist/`
-- [ ] 1.2 Add Vitest, Playwright and `@axe-core/playwright` with `npm test` and `npm run test:e2e` scripts, plus a `.gitignore` for `node_modules`, `dist` and test output; verify both scripts run and pass with one placeholder test each
-- [ ] 1.3 Add TypeScript strict mode and a lint script; verify `npm run lint` and `npx tsc --noEmit` pass on the scaffold
+- [x] 1.1 Scaffold a Vite + React + TypeScript app at the repository root (package name `the-audhd-tarot`), replacing the empty `package-lock.json`; verify `npm run dev` serves a page and `npm run build` produces `dist/`
+- [x] 1.2 Add Vitest, Playwright and `@axe-core/playwright` with `npm test` and `npm run test:e2e` scripts, plus a `.gitignore` for `node_modules`, `dist` and test output; verify both scripts run and pass with one placeholder test each
+- [x] 1.3 Add TypeScript strict mode and a lint script; verify `npm run lint` and `npx tsc --noEmit` pass on the scaffold
 
 ## 2. Card content
 
-- [ ] 2.1 Write a one-off extraction script that reads the v1 prototype's script and writes the 22-card array to a JSON snapshot in the repo (`content/v1-snapshot.json`); verify the snapshot has 22 cards and 68 unities and The Fool has five
-- [ ] 2.2 Define the card and unity types and create the typed deck module from the snapshot, renaming `superpower` to `gift` and `trap` to `shadow` and dropping `icon`; verify it compiles and exports 22 cards
-- [ ] 2.3 Implement the deck validator covering every `card-content` requirement (22 cards numbered 0–21, Justice at 8, Force at 11, non-empty fields, at least three unities, image and description present) with unit tests, including failing cases for a missing card, duplicate number, empty question and too few unities; verify the tests pass
-- [ ] 2.4 Add a unit test that compares every name, alias, essence, question and unity in the deck module with the v1 snapshot; verify it passes and fails when one word is changed
-- [ ] 2.5 Move the 22 files from `art/placeholders/` to `public/cards/NN.webp` named by card number, and add a test that every card's image file exists; verify the test passes and fails when one file is removed
-- [ ] 2.6 Write a plain-language description of each of the 22 placeholder images, by looking at each image, and store it with the card data; verify the validator passes and list the 22 descriptions for the author to review
+- [x] 2.1 Write a one-off extraction script that reads the v1 prototype's script and writes the 22-card array to a JSON snapshot in the repo (`content/v1-snapshot.json`); verify the snapshot has 22 cards and 68 unities and The Fool has five
+- [x] 2.2 Define the card and unity types and create the typed deck module from the snapshot, renaming `superpower` to `gift` and `trap` to `shadow` and dropping `icon`; verify it compiles and exports 22 cards
+- [x] 2.3 Implement the deck validator covering every `card-content` requirement (22 cards numbered 0–21, Justice at 8, Force at 11, non-empty fields, at least three unities, image and description present) with unit tests, including failing cases for a missing card, duplicate number, empty question and too few unities; verify the tests pass
+- [x] 2.4 Add a unit test that compares every name, alias, essence, question and unity in the deck module with the v1 snapshot; verify it passes and fails when one word is changed
+- [x] 2.5 Move the 22 files from `art/placeholders/` to `public/cards/NN.webp` named by card number, and add a test that every card's image file exists; verify the test passes and fails when one file is removed
+- [x] 2.6 Write a plain-language description of each of the 22 placeholder images, by looking at each image, and store it with the card data; verify the validator passes and list the 22 descriptions for the author to review
 - [ ] 2.7 Record in `content/README.md` where the text came from, how to edit it, how to replace card art, and the open content item for the author (Death's scythe unity still says "Reversed, this becomes…"); verify the documented art-replacement steps work by swapping one image and seeing it in the app once the reading exists
 
 ## 3. Themes, type and preferences
