@@ -284,7 +284,7 @@
   </div>
   <div class="row">
     <label for="s-tilt">Tilt strength <output id="o-tilt"></output></label>
-    <input type="range" id="s-tilt" min="0" max="3" step="0.05" value="1">
+    <input type="range" id="s-tilt" min="0" max="4" step="0.05" value="1.8">
   </div>
   <label class="check"><input type="checkbox" id="c-number" checked> Show the hidden number</label>
   <label class="check"><input type="checkbox" id="c-still"> Reduced motion: a still deck</label>
@@ -315,7 +315,7 @@
 
   // ---------------------------------------------------------------- settings
   // Defaults tuned by the author on a phone, 2026-10-07.
-  const settings = { drift: 0.3, pulse: 1.75, stir: 1, depth: 0.3, calm: 1.25, particles: 360, tilt: 1 }
+  const settings = { drift: 0.3, pulse: 1.75, stir: 1, depth: 0.3, calm: 1.25, particles: 360, tilt: 1.8 }
   // Reduced motion: no cloud at all. On by default when the device asks for it.
   let still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   let drawn = null // indices of the three drawn cards, or null while shuffling
@@ -829,13 +829,13 @@
 
   function readSaved() {
     try {
-      Object.assign(settings, JSON.parse(localStorage.getItem('ritual-cloud:settings')) || {})
+      Object.assign(settings, JSON.parse(localStorage.getItem('ritual-cloud:settings:2')) || {})
     } catch (error) { /* start from the defaults */ }
   }
 
   function save() {
     try {
-      localStorage.setItem('ritual-cloud:settings', JSON.stringify(settings))
+      localStorage.setItem('ritual-cloud:settings:2', JSON.stringify(settings))
     } catch (error) { /* not remembered; nothing else changes */ }
   }
 
