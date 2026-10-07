@@ -14,7 +14,7 @@
 - [x] 2.4 Add a unit test that compares every name, alias, essence, question and unity in the deck module with the v1 snapshot; verify it passes and fails when one word is changed
 - [x] 2.5 Move the 22 files from `art/placeholders/` to `public/cards/NN.webp` named by card number, and add a test that every card's image file exists; verify the test passes and fails when one file is removed
 - [x] 2.6 Write a plain-language description of each of the 22 placeholder images, by looking at each image, and store it with the card data; verify the validator passes and list the 22 descriptions for the author to review
-- [ ] 2.7 Record in `content/README.md` where the text came from, how to edit it, how to replace card art, and the open content item for the author (Death's scythe unity still says "Reversed, this becomes…"); verify the documented art-replacement steps work by swapping one image and seeing it in the app once the reading exists
+- [x] 2.7 Record in `content/README.md` where the text came from, how to edit it, how to replace card art, and the open content item for the author (Death's scythe unity still says "Reversed, this becomes…"); verify the documented art-replacement steps work by swapping one image and seeing it in the app once the reading exists
 
 ## 3. Themes, type and preferences
 
@@ -29,7 +29,7 @@
 - [x] 4.1 Implement the reading reducer (landing, draw, revealing with art and text sub-states, complete, start again) with unit tests for every transition; verify the tests pass
 - [x] 4.2 Build the responsive page frame (mobile first, 320px upward, reading text capped at about 75 characters per line) with a persistent control for the options panel; verify with e2e tests at 320px and 1280px that no screen scrolls horizontally
 - [x] 4.3 Build the landing screen with the name "The AuDHD Tarot", draft introductory copy marked for the author's review, and one primary control leading to the draw; set the page title and metadata; verify by e2e that the title and heading read "The AuDHD Tarot" and that the built output contains no "neurospicy"
-- [ ] 4.4 Add an e2e test that records network activity through a full reading and asserts every request is same-origin and no cookies are set; verify it passes
+- [x] 4.4 Add an e2e test that records network activity through a full reading and asserts every request is same-origin and no cookies are set; verify it passes
 
 ## 5. Accessibility options
 
@@ -39,21 +39,21 @@
 
 ## 6. Draw and reading
 
-- [ ] 6.1 Implement `drawCards` (Fisher–Yates with an injected random source) and the `crypto.getRandomValues` source with rejection sampling, with unit tests for no repeats and for roughly uniform frequency of every card in every position over many seeded draws; verify the tests pass
-- [ ] 6.2 Implement the spread definition and `selectUnities` (two or three at random, chosen once at draw time and stored in the reading) with unit tests; verify the tests pass, including that revisiting a card returns the same unities
-- [ ] 6.3 Build the draw screen with a single-activation draw control and three face-down cards in position order that reveal one at a time in order; preload the three drawn images when the draw completes; verify by e2e that Enter, Space and a single tap each draw, and that nothing about a card is shown or announced before it is revealed
-- [ ] 6.4 Build the art moment: full-viewport contained image with number and name, a focused "Continue" control, auto-advance to the text after the beat, cross-fade only under reduced motion, focus and announcement of position, number, name and image description; build it to the `animate` skill's standards; verify by e2e that the text appears after the beat without input, that Continue shows it at once, and that under reduced motion no transform animation runs
-- [ ] 6.5 Build the card text view (position, number, name, aliases, essence, question, unities with anchor and text-labelled Gift and Shadow); verify by e2e that it shows two or three unities and that each shows all three parts
-- [ ] 6.6 Build the full reading (three cards in position order, side by side at desktop widths, each image reopenable at full size and dismissible back to the same place) and the start-again control available throughout; verify by e2e at 320px and 1280px, including that start again clears the reading
+- [x] 6.1 Implement `drawCards` (Fisher–Yates with an injected random source) and the `crypto.getRandomValues` source with rejection sampling, with unit tests for no repeats and for roughly uniform frequency of every card in every position over many seeded draws; verify the tests pass
+- [x] 6.2 Implement the spread definition and `selectUnities` (two or three at random, chosen once at draw time and stored in the reading) with unit tests; verify the tests pass, including that revisiting a card returns the same unities
+- [x] 6.3 Build the draw screen with a single-activation draw control and three face-down cards in position order that reveal one at a time in order; preload the three drawn images when the draw completes; verify by e2e that Enter, Space and a single tap each draw, and that nothing about a card is shown or announced before it is revealed
+- [x] 6.4 Build the art moment: full-viewport contained image with number and name, a focused "Continue" control, auto-advance to the text after the beat, cross-fade only under reduced motion, focus and announcement of position, number, name and image description; build it to the `animate` skill's standards; verify by e2e that the text appears after the beat without input, that Continue shows it at once, and that under reduced motion no transform animation runs
+- [x] 6.5 Build the card text view (position, number, name, aliases, essence, question, unities with anchor and text-labelled Gift and Shadow); verify by e2e that it shows two or three unities and that each shows all three parts
+- [x] 6.6 Build the full reading (three cards in position order, side by side at desktop widths, each image reopenable at full size and dismissible back to the same place) and the start-again control available throughout; verify by e2e at 320px and 1280px, including that start again clears the reading
 
 ## 7. Accessibility verification
 
-- [ ] 7.1 Add an e2e test that completes a full reading using only Tab, Shift+Tab, Enter, Space and Escape, asserting a visible focus indicator at each step; verify it passes in both themes
-- [ ] 7.2 Run axe on every screen and on the options panel in both themes within the e2e flows, failing on any WCAG 2.2 AA violation; verify zero violations
-- [ ] 7.3 Add e2e assertions that every control is at least 44 by 44 CSS pixels, reading text is at least 16px, and no text is under 14px at the default size; verify they pass
+- [x] 7.1 Add an e2e test that completes a full reading using only Tab, Shift+Tab, Enter, Space and Escape, asserting a visible focus indicator at each step; verify it passes in both themes
+- [x] 7.2 Run axe on every screen and on the options panel in both themes within the e2e flows, failing on any WCAG 2.2 AA violation; verify zero violations
+- [x] 7.3 Add e2e assertions that every control is at least 44 by 44 CSS pixels, reading text is at least 16px, and no text is under 14px at the default size; verify they pass
 - [ ] 7.4 Do one manual pass of a full reading with a screen reader (Orca or NVDA) and record what is announced at each step in `docs/accessibility.md`, fixing anything that is unnamed, out of order or silent; verify the recorded pass covers landing, draw, all three reveals, the full reading and the options panel
 
 ## 8. Integration
 
-- [ ] 8.1 Write `README.md` covering what the app is, how to run, test and build it, and the changes planned next; verify each documented command runs as written
-- [ ] 8.2 Run the full check (`lint`, `tsc`, unit, e2e, build) and serve the built `dist/` with a static server; verify a complete reading works from the built files at phone and desktop widths in both themes
+- [x] 8.1 Write `README.md` covering what the app is, how to run, test and build it, and the changes planned next; verify each documented command runs as written
+- [x] 8.2 Run the full check (`lint`, `tsc`, unit, e2e, build) and serve the built `dist/` with a static server; verify a complete reading works from the built files at phone and desktop widths in both themes

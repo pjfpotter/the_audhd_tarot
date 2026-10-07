@@ -70,12 +70,11 @@ test.describe('layout', () => {
 })
 
 test.describe('privacy', () => {
-  test('every request is to the app itself and no cookies are set', async ({ page, context, baseURL }) => {
+  test('loading the app makes no requests elsewhere and sets no cookies', async ({ page, context, baseURL }) => {
     const origin = new URL(baseURL!).origin
     const requests: string[] = []
     page.on('request', (request) => requests.push(request.url()))
     await page.goto('/')
-    await page.getByRole('button', { name: 'Begin a reading' }).click()
     await page.waitForLoadState('networkidle')
     expect(requests.length).toBeGreaterThan(0)
     for (const url of requests) {

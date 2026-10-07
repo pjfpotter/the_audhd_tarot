@@ -1,0 +1,36 @@
+.title {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.heading {
+  display: grid;
+  gap: var(--space-1);
+  font-weight: 400;
+}
+
+.position {
+  font-family: var(--font-label);
+  font-size: var(--size-small);
+  line-height: 1.4;
+  color: var(--accent-text);
+}
+
+.name {
+  font-family: var(--font-display);
+  font-size: var(--size-title);
+  line-height: 1.15;
+}
+
+/* Set in the label face: the display face's old-style 0 reads as a bullet. */
+.numeral {
+  margin-right: var(--space-1);
+  font-family: var(--font-label);
+  font-size: 0.75em;
+  color: var(--text-muted);
+}
+
+.aliases {
+  font-size: var(--size-small);
+  color: var(--text-muted);
+}

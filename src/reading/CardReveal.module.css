@@ -1,0 +1,103 @@
+.reveal {
+  display: grid;
+  gap: var(--space-4);
+  width: 100%;
+  margin-inline: auto;
+}
+
+.figure {
+  min-height: 0;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.text {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.body {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.action {
+  justify-self: start;
+  min-height: var(--target);
+  padding: var(--space-2) var(--space-4);
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: 0;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/*
+ * The art moment: the image takes all the room the screen has, with only the
+ * card's title and the way onward beneath it.
+ */
+.reveal[data-phase='art'] {
+  flex: 1;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr) auto;
+  justify-items: center;
+  text-align: center;
+}
+
+.reveal[data-phase='art'] .figure {
+  width: 100%;
+  animation: art-in 500ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+.reveal[data-phase='art'] .text {
+  justify-items: center;
+}
+
+.reveal[data-phase='art'] .action {
+  justify-self: center;
+}
+
+/* The text view: the card stays in sight while its reading is read. */
+.reveal[data-phase='text'] {
+  max-width: 64rem;
+}
+
+.reveal[data-phase='text'] .figure {
+  height: min(50dvh, 26rem);
+}
+
+.reveal[data-phase='text'] .body {
+  animation: text-in 400ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+
+@media (min-width: 60rem) {
+  .reveal[data-phase='text'] {
+    grid-template-columns: minmax(0, 20rem) minmax(0, 1fr);
+    column-gap: var(--space-6);
+    align-items: start;
+  }
+
+  .reveal[data-phase='text'] .figure {
+    position: sticky;
+    top: var(--space-4);
+    height: auto;
+  }
+}
+
+@keyframes art-in {
+  from {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+@keyframes text-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+}

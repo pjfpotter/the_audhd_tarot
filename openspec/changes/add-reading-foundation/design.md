@@ -77,16 +77,16 @@ Images are served from `public/cards/00.webp` … `public/cards/21.webp`, moved 
 
 ### The art moment
 
-On reveal, the card's image is shown in a full-viewport layer (`100dvh`, image contained, number and name beneath). After a beat of about 1.8 seconds the layer gives way to the card's reading text, with the image settling to the top of the text view. A visible "Continue" control is present from the first frame and has focus.
+On reveal, the card's image takes the whole screen beneath the top bar (the frame is held to `100dvh`, image contained, position, number and name beneath). After a beat of 1.8 seconds it gives way to the card's reading text, with the image staying at the top of the text view. A visible "Continue" control is present from the first frame and is the next stop after the card's heading, which has focus. The top bar is left uncovered so "Options" and "Start again" stay reachable.
 
 - *Motion:* a single transform-and-opacity transition, written to the `animate` skill's standards. With reduced motion in effect it is a plain cross-fade with no movement.
-- *Screen readers:* the layer is a labelled region; on reveal, focus moves to its heading (position, number, name) and the image description is its accessible description. The text view is next in reading order and does not depend on the timer.
+- *Screen readers:* on reveal, focus moves to the card's heading (position, number, name), whose accessible description is the image's alt text. The same heading stays focused when the text emerges, so nothing is announced twice. The text is next in reading order and does not depend on the timer.
 - *Why auto-advance at all:* the author wants the art held "for a beat" and then the text to emerge. It is not a time limit in the accessibility sense: nothing is lost, the image stays on the next view, and it can be reopened from the full reading.
 - *Alternative:* wait for a tap every time. Rejected as the default because it adds three extra activations to every reading; kept as the behaviour a person gets simply by using "Continue".
 
 ### Themes and tokens
 
-All colour, type and spacing come from CSS custom properties on `:root`, with one set per theme selected by a `data-theme` attribute. The dark theme is black with pale lavender text and deep violet reserved for borders and glow; the light theme is lavender paper with black ink. Deep violet is never used for text on black, since it fails contrast. Type is three roles: Atkinson Hyperlegible for all reading and UI text, one display face for the wordmark and card names, and a monospace for small labels. Fonts are self-hosted from the repository, which removes v1's Google Fonts requests and satisfies the no-third-party requirement. Text size is one `--text-scale` multiplier applied through `rem`.
+All colour, type and spacing come from CSS custom properties on `:root`, with one set per theme selected by a `data-theme` attribute. The dark theme is black with pale lavender text and deep violet reserved for borders and glow; the light theme is lavender paper with black ink. Deep violet is never used for text on black, since it fails contrast. Type is three roles: Atkinson Hyperlegible for all reading and UI text, IM Fell English (a revival of 17th-century printing type, in keeping with the woodcut cards) for the wordmark, card names and headings, and Atkinson Hyperlegible Mono for small labels. Fonts are self-hosted from the repository, which removes v1's Google Fonts requests and satisfies the no-third-party requirement. Text size is one `--text-scale` multiplier applied through `rem`.
 
 Preferences are read by a small inline script in `index.html` that sets `data-theme`, `data-motion` and the text scale on `<html>` before first paint, so there is no flash. Storage is `localStorage` under one key, wrapped so that a blocked store degrades to in-memory.
 
@@ -116,4 +116,4 @@ The options panel is a native `<dialog>` opened with `showModal()`, which provid
 ## Open Questions
 
 - Where the app will be hosted. It does not affect anything here, since the output is static files; v1's Cloudflare Workers setup would serve it unchanged.
-- Which display face to use for the wordmark and card names. The implementation picks one within the token system and it can be swapped in one place.
+- Whether IM Fell English stays as the display face once the treated art arrives. It is set in one token and can be swapped there.
