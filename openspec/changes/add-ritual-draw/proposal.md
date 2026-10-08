@@ -8,6 +8,7 @@ A throwaway prototype (`prototypes/ritual-cloud/`, live on the site) has settled
 
 ## What Changes
 
+- Make the shuffle the app's first screen. The separate landing screen and its "Begin a reading" step go; the name, a short introduction and the privacy line sit on the shuffle itself, and starting again returns there.
 - Add a shuffle before the draw. Every tap, key press, stir and (if invited) sway of the phone is folded into a hidden number, and that number alone picks the three cards. Pressing draw counts as an input, so one press still gives a complete reading.
 - Show the hidden number as a row of eight glyphs that rolls with every input, like a dice roll.
 - Present the deck as a cloud of 22 face-down cards in real depth, among drifting particles: a tap sends a beat through it, a drag stirs it, tilting the phone shifts the view. On the draw, three cards come forward and settle into the three positions, and the existing reveal takes over.
@@ -16,6 +17,7 @@ A throwaway prototype (`prototypes/ritual-cloud/`, live on the site) has settled
 - Make phone movement opt-in through an invitation on the shuffle screen, never required, and possible to turn off.
 - Add the author's card back art, shown on every face-down card in place of the plain frame.
 - **BREAKING** for the `reading` spec: the three cards are no longer picked by the device's own randomness. They are determined by the person's input.
+- **BREAKING** for the `app-shell` spec: the app no longer opens on a landing screen that leads to the draw. It opens on the shuffle.
 - Remove the prototype page and its build step from the site once the real shuffle replaces it.
 
 Out of scope: a typed intention or question; a seal or other keepsake drawn from the input (tried in the prototype and rejected); reopening a reading from its number or a link; sound; any change to the three positions, the reveal or the reading text.
@@ -30,13 +32,13 @@ Out of scope: a typed intention or question; a seal or other keepsake drawn from
 
 - `reading`: the requirement that the draw uses the device's randomness is replaced by one where the person's shuffle determines the cards.
 - `accessibility`: the rule that nothing moves on its own gains a bounded exception for the shuffle's cloud, with a control to hold it still; a new requirement makes device motion optional.
-- `app-shell`: the fast-load requirement gains a scenario that the 3D scene's code is not loaded until the shuffle is reached.
+- `app-shell`: the landing requirement changes so that the app opens on the shuffle, which carries the name and introduction and whose primary control is the draw; the fast-load requirement now covers the 3D scene, which must not delay the first screen and is not loaded at all for the still deck.
 - `card-content`: a new requirement for the deck's card back image.
 
 ## Impact
 
-- **Code:** new shuffle modules and screens under `src/`; `src/reading/draw.ts`, `Table.tsx` and `App.tsx` change; the draw's random source is replaced by one seeded from the hidden number.
-- **Dependencies:** adds `three` (bundled with the app and served from its own origin, loaded only when the shuffle is reached). No other runtime dependency.
+- **Code:** new shuffle modules and screens under `src/`; `src/reading/draw.ts`, `src/reading/state.ts`, `Table.tsx` and `App.tsx` change; `src/app/Landing.tsx` is removed and its content moves to the shuffle screen; the draw's random source is replaced by one seeded from the hidden number.
+- **Dependencies:** adds `three` (bundled with the app and served from its own origin, in its own chunk, loaded after the first screen is shown and not at all for the still deck). No other runtime dependency.
 - **Assets:** `public/cards/back.webp`, made from `art/source/audhd-tarot-card-back.png`.
 - **Preferences:** one new saved choice, whether the shuffle is held still.
 - **Removed:** `prototypes/ritual-cloud/`, `scripts/publish-prototypes.mjs` and the build step that publishes it.
