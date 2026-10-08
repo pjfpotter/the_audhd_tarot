@@ -11,6 +11,8 @@ export const shuffleCopy = {
     still: 'The deck. Tap, or press any key, to shuffle.',
     cloud: 'The deck. Tap, press any key, or drag to shuffle.',
   },
+  hold: 'Hold still',
+  move: 'Let it move',
   draw: 'Draw three cards',
   privacy: 'Nothing you do here leaves your device.',
 }

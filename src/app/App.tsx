@@ -35,7 +35,8 @@ export function App() {
   return (
     <>
       <Frame
-        showName={state.screen !== 'draw'}
+        nameIsHeading={state.screen === 'draw'}
+        bleed={state.screen === 'draw'}
         onOpenOptions={() => setOptionsOpen(true)}
         onStartAgain={reading ? startAgain : undefined}
         fill={open?.phase === 'art'}

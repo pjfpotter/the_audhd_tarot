@@ -1,25 +1,38 @@
+/*
+ * Layout: the deck's stage takes whatever height the text leaves. The cloud,
+ * when there is one, fills the whole screen behind everything here, and the
+ * text below sits on the solid page colour so it is never read against cards.
+ */
 .shuffle {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-4);
   width: 100%;
-  max-width: 52rem;
-  margin-inline: auto;
   text-align: center;
 }
 
-.wordmark {
-  font-family: var(--font-display);
-  font-size: clamp(2rem, 9vw, 3.5rem);
-  font-weight: 400;
-  line-height: 1;
-  letter-spacing: -0.01em;
+/* Small controls for the cloud, kept out of the way at the top. */
+.extras {
+  position: relative;
+  z-index: 1;
+  align-self: stretch;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3) 0;
 }
 
-.wordmark:focus-visible {
-  outline-offset: var(--space-2);
+.extra {
+  min-width: var(--target);
+  min-height: var(--target);
+  padding: 0 var(--space-3);
+  background: var(--bg);
+  border: var(--line-width) solid var(--text-muted);
+  font-family: var(--font-label);
+  font-size: var(--size-small);
+  cursor: pointer;
 }
 
 .stage {
@@ -27,7 +40,9 @@
   display: grid;
   place-items: center;
   width: 100%;
-  padding-block: var(--space-3);
+  /* The same in both modes, so nothing jumps when the cloud takes over from the still deck. */
+  min-height: calc(min(38dvh, 20rem) + 2 * var(--space-3));
+  padding: var(--space-3);
 }
 
 .deck {
@@ -41,24 +56,48 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+/* The cloud is the whole screen, so the deck's own box, and its focus ring, is the stage. */
+.shuffle[data-mode='cloud'] .deck {
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+}
+
+/* Until its first frame is drawn the cloud stays out of sight and out of the way. */
+.shuffle[data-mode='still'] canvas {
+  visibility: hidden;
+}
+
 .foot {
+  position: relative;
+  z-index: 1;
+  align-self: stretch;
   display: grid;
   justify-items: center;
   gap: var(--space-3);
+  /* A fade at the top, then solid. All of the text is on the solid part. */
+  padding: var(--space-5) var(--space-3) var(--space-4);
+  background: linear-gradient(to top, var(--bg) calc(100% - var(--space-5)), transparent);
+}
+
+.foot > * {
   max-width: var(--measure);
 }
 
 .intro {
-  font-size: var(--size-lead);
   line-height: 1.4;
   text-wrap: balance;
 }
 
 /* The hidden number: shown as glyphs, so it can be watched without being read. */
 .glyphs {
+  display: grid;
+  align-items: center;
+  /* Room for the larger row the still deck shows, so the swap does not move the page. */
+  min-height: calc(min(2rem, 7vw) * 1.5);
   font-family: var(--font-label);
   /* Eight glyphs must fit a small phone at the largest text size. */
-  font-size: min(1.125rem, 6vw);
+  font-size: min(1.25rem, 6vw);
   line-height: 1.5;
   letter-spacing: 0.35em;
   /* The spacing after the last glyph would otherwise pull the row off centre. */

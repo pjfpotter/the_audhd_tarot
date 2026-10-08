@@ -18,6 +18,9 @@ options panel and the full-size card image, in both themes:
   the glyph row when the deck is shuffled.
 - The shuffle works by tap, by any key, and by a press that arrives with no
   pointer or key behind it, as assistive technology sends.
+- The cloud of cards: the keyboard run and the axe audit are repeated with
+  it showing, it gives way to the still deck when it cannot run, it draws
+  no frames while the page is hidden, and "Hold still" stops it at once.
 - Nothing is lost when a screen is left untouched for ten minutes.
 
 `npm test` checks that every text and background colour pairing in both themes
@@ -30,7 +33,7 @@ recording of a screen reader speaking it.
 
 | Step | Focus moves to | What is exposed |
 | --- | --- | --- |
-| The shuffle (first screen) | Top of the page on arrival; the heading after "Start again" | Heading "The AuDHD Tarot", button "The deck. Tap, or press any key, to shuffle.", the introduction, the instruction line, button "Draw three cards", the privacy line, and a status region |
+| The shuffle (first screen) | Top of the page on arrival; the heading after "Start again" | Heading "The AuDHD Tarot", button "Hold still" when the cloud is available, button "The deck. Tap, or press any key, to shuffle." (with the cloud: "The deck. Tap, press any key, or drag to shuffle."), the introduction, the instruction line, button "Draw three cards", the privacy line, and a status region |
 | Shuffling | Stays on the deck | Status region reads the count, such as "5 beats", at most once every two seconds. The row of glyphs is hidden |
 | Options | First choice in the panel | Dialog "Options" with groups "Theme", "Motion" and "Text size", each a set of radio buttons, then "Close options" |
 | Cards dealt | The first card | Heading "Your cards", then three list items: button "Where I am Turn over"; the other two read as their position and "Face down" |
@@ -46,6 +49,10 @@ carries empty alt text too: it is the same on every card and says nothing.
 
 On the deck, every key except Tab is a beat, including Enter and Space, so
 those two shuffle and do not draw. Drawing is the separate button after it.
+With the cloud showing, the arrow keys also stir it.
+
+The cloud is a canvas hidden from screen readers. It is decoration: the
+deck button, the count and the draw are the same with or without it.
 
 ## Still to do by hand
 
@@ -70,3 +77,9 @@ those two shuffle and do not draw. Drawing is the separate button after it.
   and "Start again" stay within reach.
 - Reduced motion follows the device and can also be chosen in the options. The
   app never turns motion on against the device setting.
+- The cloud of cards is the one thing that moves without being touched. It is
+  never shown with reduced motion, "Hold still" on the same screen replaces
+  it with the still deck and is remembered, and it stops when the page is
+  hidden. The automated audit cannot judge text contrast against a moving
+  canvas, so the text sits on the solid page colour below the cloud; that
+  still needs checking by eye on a phone in both themes.

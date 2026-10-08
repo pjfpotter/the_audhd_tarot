@@ -24,13 +24,13 @@
 
 ## 4. The cloud
 
-- [ ] 4.1 Add `three` as a dependency and port the prototype's scene to `src/shuffle/cloud/scene.ts` with the author's tuned settings as constants, updating the colour-space calls for the current three.js; verify it builds and that the app still makes no third-party requests
-- [ ] 4.2 Build `Cloud.tsx` as a lazily loaded wrapper, with the still deck shown until it is ready, and wire beats and stirs from `Shuffle` to the scene; verify by browser tests that, with the chunk delayed, the name, introduction, still deck and draw control are shown and a draw completes, and that the chunk is never requested under reduced motion or with the deck held still
-- [ ] 4.3 On draw in cloud mode, bring three cards forward, then hand over to the dealt cards; verify by browser test that draw over the cloud reaches the three positions with the first card ready to turn over
-- [ ] 4.4 Fall back to the still deck when the context cannot be created or is lost, and stop the frame loop when the document is hidden; verify by browser tests that force a context loss and that hide the page
-- [ ] 4.5 Add the hold-still control and the `shuffleStill` preference, absent under reduced motion; verify by browser test that it swaps to the still deck, that no frames run afterwards, and that the choice survives a reload
-- [ ] 4.6 Add a browser test that the same scripted beats draw the same cards on the cloud and on the still deck; verify it passes
-- [ ] 4.7 Extend the axe audit and keyboard-only run to the cloud presentation; verify zero violations
+- [x] 4.1 Add `three` as a dependency and port the prototype's scene to `src/shuffle/cloud/scene.ts` with the author's tuned settings as constants, updating the colour-space calls for the current three.js; verify it builds and that the app still makes no third-party requests
+- [x] 4.2 Build `Cloud.tsx` as a lazily loaded wrapper, with the still deck shown until it is ready, and wire beats and stirs from `Shuffle` to the scene; verify by browser tests that, with the chunk delayed, the name, introduction, still deck and draw control are shown and a draw completes, and that the chunk is never requested under reduced motion or with the deck held still
+- [x] 4.3 On draw in cloud mode, bring three cards forward, then hand over to the dealt cards; verify by browser test that draw over the cloud reaches the three positions with the first card ready to turn over
+- [x] 4.4 Fall back to the still deck when the context cannot be created or is lost, and stop the frame loop when the document is hidden; verify by browser tests that force a context loss and that hide the page
+- [x] 4.5 Add the hold-still control and the `shuffleStill` preference, absent under reduced motion; verify by browser test that it swaps to the still deck, that no frames run afterwards, and that the choice survives a reload
+- [x] 4.6 Add a browser test that the same scripted beats draw the same cards on the cloud and on the still deck; verify it passes
+- [x] 4.7 Extend the axe audit and keyboard-only run to the cloud presentation; verify zero violations
 - [ ] 4.8 Author check on a real phone: compare the app's cloud side by side with the live prototype for look, feel and frame rate, judge whether the name, introduction and controls stay legible over it in both themes, and record the result and any retuned settings in `docs/ritual-draw.md`; verify the document names the phone and browser used
 
 ## 5. Phone movement

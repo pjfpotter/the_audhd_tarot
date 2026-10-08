@@ -13,7 +13,15 @@
   padding-block: var(--space-3);
 }
 
+.frame[data-bleed] .main {
+  padding: 0;
+}
+
+/* Above the shuffle's cloud, which fills the screen behind it. */
 .bar {
+  position: relative;
+  z-index: 1;
+  background: var(--bg);
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -26,6 +34,15 @@
   font-family: var(--font-display);
   font-size: var(--size-lead);
   line-height: 1.2;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  /* Small enough to share the bar with the options control on a 320px screen. */
+  font-size: clamp(1.25rem, 6vw, 1.625rem);
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 .controls {

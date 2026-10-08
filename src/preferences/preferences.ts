@@ -9,12 +9,15 @@ export interface Preferences {
   theme: ThemeChoice
   motion: MotionChoice
   textScale: TextScale
+  /** Hold the shuffle's cloud of cards still, showing the still deck in its place. */
+  shuffleStill: boolean
 }
 
 export const DEFAULT_PREFERENCES: Preferences = {
   theme: 'system',
   motion: 'system',
   textScale: 1,
+  shuffleStill: false,
 }
 
 /** Also read by the inline script in index.html, which runs before first paint. */
@@ -30,6 +33,7 @@ function parse(raw: string | null): Preferences {
       theme: saved.theme === 'light' || saved.theme === 'dark' ? saved.theme : 'system',
       motion: saved.motion === 'reduced' ? 'reduced' : 'system',
       textScale: TEXT_SCALES.find((scale) => scale === saved.textScale) ?? 1,
+      shuffleStill: saved.shuffleStill === true,
     }
   } catch {
     return DEFAULT_PREFERENCES
