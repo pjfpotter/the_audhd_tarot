@@ -53,12 +53,12 @@ test.describe('the panel', () => {
     await expect(panel(page)).toBeHidden()
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('The AuDHD Tarot')
 
-    await page.getByRole('button', { name: 'Begin a reading' }).click()
+    await page.getByRole('button', { name: 'Draw three cards' }).click()
     await openOptions(page)
     await choose(page, 'Theme', 'Dark')
     await panel(page).getByRole('button', { name: 'Close options' }).click()
     await expect(panel(page)).toBeHidden()
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('The draw')
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Your cards')
   })
 
   test('keeps keyboard focus inside, closes on Escape and returns focus', async ({ page }) => {
@@ -146,7 +146,7 @@ test('at the largest text size on a small phone, everything fits by scrolling do
   expect(await fits('dialog')).toBe(true)
   await panel(page).getByRole('button', { name: 'Close options' }).click()
   expect(await fits('html')).toBe(true)
-  await expect(page.getByRole('button', { name: 'Begin a reading' })).toBeVisible()
-  await page.getByRole('button', { name: 'Begin a reading' }).click()
+  await expect(page.getByRole('button', { name: 'Draw three cards' })).toBeVisible()
+  await page.getByRole('button', { name: 'Draw three cards' }).click()
   expect(await fits('html')).toBe(true)
 })

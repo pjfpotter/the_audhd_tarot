@@ -3,10 +3,7 @@ import { type Page, expect, test } from '@playwright/test'
 const POSITIONS = ['Where I am', 'How I should travel', "Where I'm going next"]
 const ART_BEAT_MS = 1800
 
-async function enter(page: Page) {
-  await page.goto('/')
-  await page.getByRole('button', { name: 'Begin a reading' }).click()
-}
+const enter = (page: Page) => page.goto('/')
 
 async function draw(page: Page) {
   await enter(page)
@@ -60,7 +57,9 @@ test.describe('the draw', () => {
     await draw(page)
     const table = page.getByRole('main')
     await expect(table.getByRole('img')).toHaveCount(0)
-    await expect(table.locator('img')).toHaveCount(0)
+    // Every face-down card shows the same card back, and nothing else.
+    const images = await table.locator('img').evaluateAll((imgs) => imgs.map((img) => img.getAttribute('src')))
+    expect(images).toEqual(['/cards/back.webp', '/cards/back.webp', '/cards/back.webp'])
     await expect(table.getByRole('button')).toHaveCount(1)
     await expect(table.getByRole('button')).toHaveAccessibleName('Where I am Turn over')
     await expect(table.getByText('Face down')).toHaveCount(2)
@@ -249,8 +248,8 @@ test.describe('the full reading', () => {
   test('starting again clears the reading', async ({ page }) => {
     await completeReading(page)
     await page.getByRole('button', { name: 'Start a new reading' }).click()
-    await expect(heading(page)).toHaveText('The draw')
-    await expect(page.getByRole('main').locator('img')).toHaveCount(0)
+    await expect(heading(page)).toHaveText('The AuDHD Tarot')
+    await expect(page.getByRole('main').locator('img:not([src$="back.webp"])')).toHaveCount(0)
     await expect(page.getByRole('button', { name: 'Draw three cards' })).toBeVisible()
   })
 
@@ -272,7 +271,8 @@ test('starting again is available throughout a reading', async ({ page }) => {
   await page.getByRole('button', { name: 'Continue' }).click()
   await expect(again).toBeVisible()
   await again.click()
-  await expect(heading(page)).toHaveText('The draw')
+  await expect(heading(page)).toHaveText('The AuDHD Tarot')
+  await expect(heading(page)).toBeFocused()
 })
 
 test('the options panel leaves a reading in progress untouched', async ({ page }) => {

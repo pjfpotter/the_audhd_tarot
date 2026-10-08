@@ -43,7 +43,8 @@ project, so every push to `main` builds and deploys by itself.
 | `src/content/` | The deck: card text, image descriptions and the validator |
 | `src/reading/` | The draw, the reading state and the reading screens |
 | `src/preferences/` | Theme, motion and text size options |
-| `src/app/` | The page frame and landing screen |
+| `src/app/` | The page frame and the app's wording |
+| `src/shuffle/` | The first screen: the shuffle, its hidden number and the deck |
 | `src/styles/` | Design tokens, fonts and base styles |
 | `public/cards/` | Card images, named by card number |
 | `art/source/` | Full-size originals of the card art; not part of the app |

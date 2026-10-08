@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { cards } from '../content/cards'
-import { type Random, deviceRandom, drawCards, drawReading, selectUnities } from './draw'
+import { type Random, drawCards, drawReading, selectUnities } from './draw'
 import { threeCardSpread } from './spread'
 
 /** A repeatable random source (mulberry32), so results do not vary between runs. */
@@ -44,20 +44,6 @@ describe('drawCards', () => {
     const random = seeded(3)
     const draws = new Set(Array.from({ length: 50 }, () => drawCards(cards, 3, random).join(',')))
     expect(draws.size).toBeGreaterThan(40)
-  })
-})
-
-describe('deviceRandom', () => {
-  test('stays within the limit and reaches every value', () => {
-    const seen = new Set<number>()
-    for (let i = 0; i < 2000; i++) {
-      const value = deviceRandom(22)
-      expect(Number.isInteger(value)).toBe(true)
-      expect(value).toBeGreaterThanOrEqual(0)
-      expect(value).toBeLessThan(22)
-      seen.add(value)
-    }
-    expect(seen.size).toBe(22)
   })
 })
 

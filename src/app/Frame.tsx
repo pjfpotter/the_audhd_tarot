@@ -2,7 +2,7 @@ import type { ReactNode } from 'react'
 import styles from './Frame.module.css'
 
 interface FrameProps {
-  /** The landing screen carries the name itself, so the bar leaves it out. */
+  /** The first screen carries the name itself, so the bar leaves it out. */
   showName: boolean
   onOpenOptions: () => void
   /** Present while there is a reading to leave; shows the control for it. */

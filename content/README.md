@@ -42,6 +42,21 @@ image, in plain language, without interpreting the card.
 The full-size originals of the current art are in `art/source/`. They are not
 part of the app.
 
+## The card back
+
+Every face-down card, and the deck on the first screen, shows
+`public/cards/back.webp`. It was made from
+`art/source/audhd-tarot-card-back.png`, 720 pixels wide, with:
+
+```
+convert art/source/audhd-tarot-card-back.png -resize 720x -quality 86 public/cards/back.webp
+```
+
+To change it, replace that file with another WebP of the same name and the
+same 720:1354 shape, then run `npm test`, which fails if the file is missing.
+The corners of the current art are transparent, so the page shows through
+them.
+
 ## Open items for the author
 
 - **Death, "The scythe".** The shadow still reads "Reversed, this becomes
@@ -56,6 +71,7 @@ part of the app.
   describe what is actually pictured.
 - **Anchors have not been checked against this art.** Many were written from a
   different deck and may point at details these images do not show.
-- **Landing copy is a draft.** The introduction, button label and privacy line
+- **First-screen copy is a draft.** The introduction, the shuffle's instruction
+  line, the button label and the privacy line
   in `src/app/copy.ts` were written during the build as placeholders and need
   the author's own words.

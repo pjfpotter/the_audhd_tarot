@@ -64,7 +64,7 @@
   }
 }
 
-/* On a narrow screen the controls need the bar; the landing screen has already named the app. */
+/* On a narrow screen the controls need the bar; the first screen has already named the app. */
 @media (max-width: 30rem) {
   .name {
     display: none;

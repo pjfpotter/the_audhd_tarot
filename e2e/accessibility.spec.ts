@@ -31,9 +31,13 @@ for (const theme of THEMES) {
     await page.goto('/')
     const heading = page.getByRole('heading', { level: 1 })
 
-    await tabTo(page, 'Begin a reading')
+    // The deck is shuffled by any key, and Tab still leaves it.
+    await tabTo(page, /^The deck/)
+    const glyphs = page.locator('[class*="_glyphs_"]')
+    const before = await glyphs.innerText()
     await page.keyboard.press('Enter')
-    await expect(heading).toHaveText('The draw')
+    await page.keyboard.press('s')
+    await expect(glyphs).not.toHaveText(before)
 
     await tabTo(page, 'Draw three cards')
     await page.keyboard.press('Space')
@@ -65,21 +69,22 @@ for (const theme of THEMES) {
 
     await tabTo(page, 'Start a new reading')
     await page.keyboard.press('Enter')
-    await expect(heading).toHaveText('The draw')
+    await expect(heading).toHaveText('The AuDHD Tarot')
+    await expect(glyphs).toHaveText(before)
   })
 }
 
 /** Runs `check` on every screen of the app, including both dialogs. */
 async function onEveryScreen(page: Page, check: (screen: string) => Promise<void>) {
   await page.goto('/')
-  await check('landing')
+  await check('shuffle')
 
   await page.getByRole('button', { name: 'Options' }).click()
   await check('options panel')
   await page.keyboard.press('Escape')
 
-  await page.getByRole('button', { name: 'Begin a reading' }).click()
-  await check('the draw')
+  await page.getByRole('button', { name: /^The deck/ }).click()
+  await check('shuffle, after a beat')
 
   await page.getByRole('button', { name: 'Draw three cards' }).click()
   await check('cards face down')

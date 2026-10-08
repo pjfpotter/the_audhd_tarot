@@ -1,0 +1,103 @@
+.shuffle {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: 52rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.wordmark {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 9vw, 3.5rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.wordmark:focus-visible {
+  outline-offset: var(--space-2);
+}
+
+.stage {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  width: 100%;
+  padding-block: var(--space-3);
+}
+
+.deck {
+  min-width: var(--target);
+  min-height: var(--target);
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.foot {
+  display: grid;
+  justify-items: center;
+  gap: var(--space-3);
+  max-width: var(--measure);
+}
+
+.intro {
+  font-size: var(--size-lead);
+  line-height: 1.4;
+  text-wrap: balance;
+}
+
+/* The hidden number: shown as glyphs, so it can be watched without being read. */
+.glyphs {
+  font-family: var(--font-label);
+  /* Eight glyphs must fit a small phone at the largest text size. */
+  font-size: min(1.125rem, 6vw);
+  line-height: 1.5;
+  letter-spacing: 0.35em;
+  /* The spacing after the last glyph would otherwise pull the row off centre. */
+  text-indent: 0.35em;
+  white-space: nowrap;
+  color: var(--accent-text);
+}
+
+/* With the still deck the number is the centrepiece. */
+.shuffle[data-mode='still'] .glyphs {
+  font-size: min(2rem, 7vw);
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+}
+
+.hint {
+  font-size: var(--size-small);
+  color: var(--text-muted);
+  text-wrap: balance;
+}
+
+.draw {
+  min-height: 3.5rem;
+  padding: var(--space-2) var(--space-5);
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: 0;
+  box-shadow: 6px 6px 0 var(--accent);
+  font-size: var(--size-lead);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.draw:active {
+  box-shadow: 2px 2px 0 var(--accent);
+  translate: 4px 4px;
+}
+
+.privacy {
+  font-size: var(--size-small);
+  color: var(--text-muted);
+}

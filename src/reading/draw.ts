@@ -5,20 +5,6 @@ import type { Reading } from './state'
 /** Returns a whole number from 0 up to, but not including, `limit`, each equally likely. */
 export type Random = (limit: number) => number
 
-/**
- * Randomness from the person's own device. Values that would favour the low
- * numbers are thrown away and drawn again, so every outcome is equally likely.
- */
-export const deviceRandom: Random = (limit) => {
-  const range = 0x1_0000_0000
-  const ceiling = range - (range % limit)
-  const value = new Uint32Array(1)
-  do {
-    crypto.getRandomValues(value)
-  } while (value[0]! >= ceiling)
-  return value[0]! % limit
-}
-
 /** Picks `count` different items in random order. */
 function pick<T>(items: readonly T[], count: number, random: Random): T[] {
   const pool = [...items]
