@@ -10,11 +10,11 @@ export interface DrawnCard {
 export type Reading = readonly DrawnCard[]
 
 /**
- * Where the person is. A reading in progress shows either the table of cards
- * or one card, whose art is held for a moment before its text.
+ * Where the person is. The app opens on the draw, which is the shuffle. A
+ * reading in progress shows either the table of cards or one card, whose art
+ * is held for a moment before its text.
  */
 export type State =
-  | { screen: 'landing' }
   | { screen: 'draw' }
   | {
       screen: 'revealing'
@@ -31,7 +31,6 @@ export type State =
     }
 
 export type Action =
-  | { type: 'enter' }
   | { type: 'draw'; reading: Reading }
   | { type: 'openCard'; index: number }
   | { type: 'showText' }
@@ -40,13 +39,10 @@ export type Action =
   | { type: 'closeArt' }
   | { type: 'startAgain' }
 
-export const initialState: State = { screen: 'landing' }
+export const initialState: State = { screen: 'draw' }
 
 export function reducer(state: State, action: Action): State {
   switch (action.type) {
-    case 'enter':
-      return state.screen === 'landing' ? { screen: 'draw' } : state
-
     case 'draw':
       if (state.screen !== 'draw') return state
       return { screen: 'revealing', reading: action.reading, revealed: 0, open: null }
@@ -83,6 +79,6 @@ export function reducer(state: State, action: Action): State {
       return state.screen === 'complete' ? { ...state, art: null } : state
 
     case 'startAgain':
-      return state.screen === 'landing' ? state : { screen: 'draw' }
+      return state.screen === 'draw' ? state : { screen: 'draw' }
   }
 }

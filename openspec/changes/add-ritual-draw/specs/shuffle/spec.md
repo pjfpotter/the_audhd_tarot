@@ -7,14 +7,14 @@ Lets a person shuffle the deck by stimming before they draw, so that the three c
 ## ADDED Requirements
 
 ### Requirement: The person shuffles before drawing
-Before the draw the app SHALL present the deck and invite the person to shuffle it, for as long as they like. Shuffling SHALL be optional: the draw control SHALL be available from the first moment, and there SHALL be no minimum, no timer and no prompt to finish.
+The shuffle SHALL be the app's first screen: on opening, the app SHALL present the deck and invite the person to shuffle it, for as long as they like, with no step before it. Shuffling SHALL be optional: the draw control SHALL be available from the first moment, and there SHALL be no minimum, no timer and no prompt to finish.
 
 #### Scenario: Shuffle as long as wanted
 - **WHEN** a person shuffles for several minutes without drawing
 - **THEN** the app keeps responding to every input and never ends or interrupts the shuffle
 
 #### Scenario: Draw without shuffling
-- **WHEN** a person arrives at the shuffle and activates the draw control at once
+- **WHEN** a person opens the app and activates the draw control at once
 - **THEN** three cards are drawn
 
 ### Requirement: Rhythm and stirring are inputs
@@ -106,7 +106,7 @@ On the draw, three cards SHALL come forward out of the cloud and settle face dow
 The app SHALL show a still deck in place of the cloud when reduced motion is in effect, when the device cannot run the three-dimensional scene, or when the person chooses to hold the deck still. With the still deck, rhythm SHALL shuffle exactly as before, the glyphs SHALL be shown larger, and nothing SHALL move: a roll of the glyphs is at most a brief fade.
 
 #### Scenario: Reduced motion
-- **WHEN** reduced motion is in effect and a person reaches the shuffle
+- **WHEN** the app is opened with reduced motion in effect
 - **THEN** a still deck and the row of glyphs are shown, with no cloud and no particles
 
 #### Scenario: Device cannot run the scene
@@ -148,7 +148,7 @@ Where a device offers motion sensing, the cloud SHALL offer an invitation to let
 - **THEN** that position is treated as level
 
 ### Requirement: Starting again starts a new shuffle
-When a person starts again, the hidden number SHALL return to its starting value and the deck SHALL be shown ready to shuffle.
+When a person starts again, they SHALL return to the app's first screen: the hidden number SHALL return to its starting value and the deck SHALL be shown ready to shuffle.
 
 #### Scenario: Fresh number
 - **WHEN** a person starts again after a reading

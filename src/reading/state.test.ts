@@ -9,7 +9,7 @@ const reading: Reading = [3, 12, 19].map((number) => ({
 
 const run = (actions: Action[], from: State = initialState) => actions.reduce(reducer, from)
 
-const drawn = run([{ type: 'enter' }, { type: 'draw', reading }])
+const drawn = run([{ type: 'draw', reading }])
 const revealCard = (index: number): Action[] => [
   { type: 'openCard', index },
   { type: 'showText' },
@@ -17,16 +17,12 @@ const revealCard = (index: number): Action[] => [
 ]
 
 describe('reading state', () => {
-  test('starts on the landing screen', () => {
-    expect(initialState).toEqual({ screen: 'landing' })
+  test('starts on the draw', () => {
+    expect(initialState).toEqual({ screen: 'draw' })
   })
 
-  test('entering leads to the draw', () => {
-    expect(run([{ type: 'enter' }])).toEqual({ screen: 'draw' })
-  })
-
-  test('nothing can be drawn before entering', () => {
-    expect(run([{ type: 'draw', reading }])).toEqual({ screen: 'landing' })
+  test('a second draw cannot replace a reading in progress', () => {
+    expect(reducer(drawn, { type: 'draw', reading: [...reading].reverse() })).toBe(drawn)
   })
 
   test('a draw deals the cards face down', () => {
@@ -87,7 +83,6 @@ describe('reading state', () => {
   })
 
   test.each([
-    ['the draw', run([{ type: 'enter' }])],
     ['the table', drawn],
     ['an art moment', run([{ type: 'openCard', index: 0 }], drawn)],
     ['a card text', run([{ type: 'openCard', index: 0 }, { type: 'showText' }], drawn)],
@@ -100,6 +95,5 @@ describe('reading state', () => {
     expect(reducer(initialState, { type: 'startAgain' })).toBe(initialState)
     expect(reducer(drawn, { type: 'showText' })).toBe(drawn)
     expect(reducer(drawn, { type: 'openArt', index: 0 })).toBe(drawn)
-    expect(reducer(drawn, { type: 'enter' })).toBe(drawn)
   })
 })

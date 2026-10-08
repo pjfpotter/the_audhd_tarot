@@ -4,11 +4,11 @@ import { OptionsPanel } from '../preferences/OptionsPanel'
 import { CardReveal } from '../reading/CardReveal'
 import { FullReading } from '../reading/FullReading'
 import { Table } from '../reading/Table'
-import { deviceRandom, drawReading } from '../reading/draw'
+import { drawReading } from '../reading/draw'
 import { threeCardSpread as spread } from '../reading/spread'
 import { type DrawnCard, initialState, reducer } from '../reading/state'
+import { Shuffle } from '../shuffle/Shuffle'
 import { Frame } from './Frame'
-import { Landing } from './Landing'
 
 const cardFor = (drawn: DrawnCard) => deck.find((card) => card.number === drawn.number)!
 
@@ -35,19 +35,21 @@ export function App() {
   return (
     <>
       <Frame
-        showName={state.screen !== 'landing'}
+        nameIsHeading={state.screen === 'draw'}
+        bleed={state.screen === 'draw'}
         onOpenOptions={() => setOptionsOpen(true)}
         onStartAgain={reading ? startAgain : undefined}
         fill={open?.phase === 'art'}
       >
-        {state.screen === 'landing' && <Landing onEnter={() => dispatch({ type: 'enter' })} />}
+        {state.screen === 'draw' && (
+          <Shuffle onDraw={(random) => dispatch({ type: 'draw', reading: drawReading(deck, spread, random) })} />
+        )}
 
-        {(state.screen === 'draw' || (state.screen === 'revealing' && !open)) && (
+        {state.screen === 'revealing' && !open && (
           <Table
             spread={spread}
-            cards={reading?.map(cardFor) ?? null}
-            revealed={state.screen === 'revealing' ? state.revealed : 0}
-            onDraw={() => dispatch({ type: 'draw', reading: drawReading(deck, spread, deviceRandom) })}
+            cards={state.reading.map(cardFor)}
+            revealed={state.revealed}
             onOpenCard={(index) => dispatch({ type: 'openCard', index })}
           />
         )}

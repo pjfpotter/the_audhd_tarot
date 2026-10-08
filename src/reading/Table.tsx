@@ -1,51 +1,48 @@
 import { useEffect, useId, useRef } from 'react'
 import { useScreenHeading } from '../app/useScreenHeading'
+import { cardBack } from '../content/deck'
 import type { Card } from '../content/types'
 import type { Spread } from './spread'
 import styles from './Table.module.css'
 
 interface TableProps {
   spread: Spread
-  /** The drawn cards in position order, or null before the draw. */
-  cards: readonly Card[] | null
+  /** The drawn cards in position order. */
+  cards: readonly Card[]
   /** How many cards have been turned over. */
   revealed: number
-  onDraw: () => void
   onOpenCard: (index: number) => void
 }
 
+const back = <img className={styles.back} src={cardBack} alt="" width={720} height={1354} />
+
 /**
- * The draw, and then the three cards laid out in position order. One press
- * draws; each card is turned over by the person, in order, when they choose.
+ * The three drawn cards laid out in position order. Each is turned over by
+ * the person, in order, when they choose.
  */
-export function Table({ spread, cards, revealed, onDraw, onOpenCard }: TableProps) {
+export function Table({ spread, cards, revealed, onOpenCard }: TableProps) {
   const heading = useScreenHeading<HTMLHeadingElement>()
   const next = useRef<HTMLButtonElement>(null)
   const id = useId()
-  const drawn = cards !== null
 
-  // Once there are cards, focus goes to the one to turn over next, so a
-  // keyboard or switch user can carry straight on.
+  // Focus goes to the card to turn over next, so a keyboard or switch user
+  // can carry straight on.
   useEffect(() => {
-    if (drawn) next.current?.focus()
-  }, [drawn, revealed])
+    next.current?.focus()
+  }, [revealed])
 
   return (
     <div className={styles.table}>
       <div className={styles.intro}>
         <h1 ref={heading} tabIndex={-1} className={styles.heading}>
-          {drawn ? 'Your cards' : 'The draw'}
+          Your cards
         </h1>
-        <p>
-          {drawn
-            ? 'Turn them over in order, whenever you are ready.'
-            : 'One press draws all three cards. You turn each one over yourself.'}
-        </p>
+        <p>Turn them over in order, whenever you are ready.</p>
       </div>
 
       <ol className={styles.slots}>
         {spread.positions.map((position, index) => {
-          const card = cards?.[index]
+          const card = cards[index]!
           const positionId = `${id}-position-${index}`
           const captionId = `${id}-caption-${index}`
           const labelledBy = `${positionId} ${captionId}`
@@ -54,9 +51,7 @@ export function Table({ spread, cards, revealed, onDraw, onOpenCard }: TableProp
               <p id={positionId} className={styles.position}>
                 {position}
               </p>
-              {!card ? (
-                <div className={styles.empty} />
-              ) : index < revealed ? (
+              {index < revealed ? (
                 <button
                   type="button"
                   className={styles.card}
@@ -77,14 +72,14 @@ export function Table({ spread, cards, revealed, onDraw, onOpenCard }: TableProp
                   ref={next}
                   onClick={() => onOpenCard(index)}
                 >
-                  <span className={styles.back} />
+                  {back}
                   <span id={captionId} className={styles.caption}>
                     Turn over
                   </span>
                 </button>
               ) : (
                 <div className={styles.card}>
-                  <span className={styles.back} />
+                  {back}
                   <span className={styles.caption}>Face down</span>
                 </div>
               )}
@@ -92,12 +87,6 @@ export function Table({ spread, cards, revealed, onDraw, onOpenCard }: TableProp
           )
         })}
       </ol>
-
-      {!drawn && (
-        <button type="button" className={styles.draw} onClick={onDraw}>
-          Draw three cards
-        </button>
-      )}
     </div>
   )
 }

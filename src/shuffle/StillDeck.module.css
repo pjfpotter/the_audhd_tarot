@@ -1,0 +1,25 @@
+.deck {
+  position: relative;
+  display: block;
+  height: min(38dvh, 20rem);
+  aspect-ratio: 720 / 1354;
+}
+
+.deck img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* A loose stack, so it reads as a deck and not as one card. */
+.deck img:nth-child(1) {
+  rotate: -6deg;
+  translate: -9% 2%;
+}
+
+.deck img:nth-child(2) {
+  rotate: 5deg;
+  translate: 8% 1%;
+}

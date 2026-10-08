@@ -46,17 +46,11 @@
 }
 
 /* Every card, face up or down, sits in a box the shape of the card art. */
-.empty,
 .back,
 .image {
   display: block;
   width: 100%;
   aspect-ratio: 720 / 1354;
-}
-
-.empty {
-  align-self: start;
-  border: var(--line-width) dashed var(--text-muted);
 }
 
 .card {
@@ -77,17 +71,10 @@ button.card {
 }
 
 /* height: auto overrides the img height attribute, which would otherwise win over aspect-ratio. */
+.back,
 .image {
   height: auto;
   object-fit: contain;
-}
-
-/* The card back: a plain field with a frame inset from the edge. */
-.back {
-  background: var(--surface);
-  border: var(--line-width) solid var(--accent);
-  outline: var(--line-width) solid var(--accent);
-  outline-offset: calc(-1 * var(--space-2) - var(--line-width));
 }
 
 .caption {
@@ -99,19 +86,6 @@ button.card .caption {
   font-weight: 700;
   text-decoration: underline;
   text-underline-offset: 0.2em;
-}
-
-.draw {
-  justify-self: start;
-  min-height: 3.5rem;
-  padding: var(--space-2) var(--space-5);
-  background: var(--button-bg);
-  color: var(--button-text);
-  border: 0;
-  box-shadow: 6px 6px 0 var(--accent);
-  font-size: var(--size-lead);
-  font-weight: 700;
-  cursor: pointer;
 }
 
 @media (min-width: 40rem) {

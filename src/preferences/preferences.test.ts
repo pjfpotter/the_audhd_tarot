@@ -15,16 +15,18 @@ describe('preferences store', () => {
       theme: 'system',
       motion: 'system',
       textScale: 1,
+      shuffleStill: false,
     })
   })
 
   test('remembers choices for the next visit', () => {
     const storage = memoryStorage()
-    createPreferencesStore(storage).set({ theme: 'dark', textScale: 1.5 })
+    createPreferencesStore(storage).set({ theme: 'dark', textScale: 1.5, shuffleStill: true })
     expect(createPreferencesStore(storage).get()).toEqual({
       theme: 'dark',
       motion: 'system',
       textScale: 1.5,
+      shuffleStill: true,
     })
   })
 
@@ -40,7 +42,7 @@ describe('preferences store', () => {
 
   test('ignores saved values it does not recognise', () => {
     const storage = memoryStorage({
-      [STORAGE_KEY]: JSON.stringify({ theme: 'sepia', motion: 'lots', textScale: 9 }),
+      [STORAGE_KEY]: JSON.stringify({ theme: 'sepia', motion: 'lots', textScale: 9, shuffleStill: 'yes' }),
     })
     expect(createPreferencesStore(storage).get()).toEqual(DEFAULT_PREFERENCES)
   })

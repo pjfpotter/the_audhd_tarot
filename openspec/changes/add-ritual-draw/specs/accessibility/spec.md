@@ -14,7 +14,7 @@ The app SHALL contain no flashing or strobing content and no sound. No content S
 - **THEN** nothing on the screen is moving
 
 #### Scenario: No cloud under reduced motion
-- **WHEN** reduced motion is in effect and a person reaches the shuffle
+- **WHEN** the app is opened with reduced motion in effect
 - **THEN** nothing on the screen moves without their action
 
 #### Scenario: Stops out of view
