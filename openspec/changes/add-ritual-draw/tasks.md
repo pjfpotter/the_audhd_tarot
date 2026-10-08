@@ -43,5 +43,5 @@
 ## 6. Retire the prototype
 
 - [ ] 6.1 Remove `prototypes/ritual-cloud/`, `scripts/publish-prototypes.mjs` and the build step that calls it, once task 4.8 is recorded; verify `npm run build` produces no `dist/prototypes` and the full check passes
-- [ ] 6.2 Update `README.md` (what the shuffle is and that the app opens on it, the new dependency, the planned-next list); verify each documented command runs as written
+- [x] 6.2 Update `README.md` (what the shuffle is and that the app opens on it, the new dependency, the planned-next list); verify each documented command runs as written
 - [ ] 6.3 Run the full check (`lint`, `typecheck`, unit, browser, build) and complete a reading on the deployed site on a phone and a desktop in both themes; verify the reading completes with the cloud and with reduced motion
