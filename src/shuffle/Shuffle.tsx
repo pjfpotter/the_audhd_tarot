@@ -17,6 +17,7 @@ import { DRAW_SETTLE_MS } from './cloud/settings'
 import { INPUT, fold, glyphs, moment, start, toRandom } from './number'
 import styles from './Shuffle.module.css'
 import { StillDeck } from './StillDeck'
+import { type OrientationPermission, createSway, createTilt } from './tilt'
 
 // The three-dimensional scene is fetched apart from the rest of the app, and
 // only when it is going to be shown.
@@ -24,6 +25,9 @@ const Cloud = lazy(() => import('./cloud/Cloud'))
 
 /** How often, at most, the count of beats is spoken to a screen reader. */
 const SPOKEN_EVERY_MS = 2000
+
+/** How long to wait for the phone's first reading before taking it that there is no sensor. */
+const TILT_SILENCE_MS = 1500
 
 const ARROWS: Record<string, readonly [number, number]> = {
   ArrowLeft: [-1, 0],
@@ -65,6 +69,18 @@ export function Shuffle({ onDraw }: { onDraw: (random: Random) => void }) {
   // The still deck stands in until the cloud has loaded and drawn its first frame.
   const mode = cloudWanted && ready ? 'cloud' : 'still'
 
+  // Phone movement: offered over the cloud, followed only once accepted, and never remembered.
+  const [tilt] = useState(() =>
+    createTilt(
+      window,
+      // Absent in some browsers; on an iPhone it carries the function that asks the person.
+      globalThis.DeviceOrientationEvent as OrientationPermission | undefined,
+      navigator.maxTouchPoints > 0,
+    ),
+  )
+  const [following, setFollowing] = useState<'off' | 'on' | 'withdrawn'>('off')
+  const listening = useRef<number | undefined>(undefined)
+
   useEffect(
     () => () => {
       window.clearTimeout(speaking.current)
@@ -72,6 +88,16 @@ export function Shuffle({ onDraw }: { onDraw: (random: Random) => void }) {
     },
     [],
   )
+
+  // The phone is followed only while the cloud is there to move.
+  useEffect(() => {
+    if (mode !== 'cloud') return
+    return () => {
+      window.clearTimeout(listening.current)
+      tilt.stop()
+      setFollowing((now) => (now === 'on' ? 'off' : now))
+    }
+  }, [mode, tilt])
 
   function input(...values: number[]) {
     number.current = fold(number.current, ...values)
@@ -156,6 +182,37 @@ export function Shuffle({ onDraw }: { onDraw: (random: Random) => void }) {
     settling.current = window.setTimeout(() => onDraw(random), DRAW_SETTLE_MS)
   }
 
+  async function follow() {
+    const sway = createSway()
+    let heard = false
+    const granted = await tilt.start((reading) => {
+      heard = true
+      scene.current?.setTilt(reading)
+      // A deliberate sway is input too; sensor jitter is not.
+      if (!drawing() && sway(reading, performance.now())) {
+        input(INPUT.sway, moment(), reading.x * 1000, reading.y * 1000)
+      }
+    })
+    // Declined, or not allowed here: the invitation goes, and everything else carries on.
+    if (!granted) {
+      setFollowing('withdrawn')
+      return
+    }
+    setFollowing('on')
+    listening.current = window.setTimeout(() => {
+      if (heard) return
+      tilt.stop()
+      setFollowing('withdrawn')
+    }, TILT_SILENCE_MS)
+  }
+
+  function unfollow() {
+    window.clearTimeout(listening.current)
+    tilt.stop()
+    scene.current?.setTilt(null)
+    setFollowing('off')
+  }
+
   function onCloudFail() {
     cloudFailed = true
     setFailed(true)
@@ -165,6 +222,11 @@ export function Shuffle({ onDraw }: { onDraw: (random: Random) => void }) {
     <div className={styles.shuffle} data-mode={mode}>
       {cloudPossible && (
         <div className={styles.extras}>
+          {mode === 'cloud' && tilt.available && following !== 'withdrawn' && (
+            <button type="button" className={styles.extra} onClick={following === 'on' ? unfollow : follow}>
+              {following === 'on' ? shuffleCopy.unfollow : shuffleCopy.follow}
+            </button>
+          )}
           <button
             type="button"
             className={styles.extra}

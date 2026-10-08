@@ -33,7 +33,7 @@ recording of a screen reader speaking it.
 
 | Step | Focus moves to | What is exposed |
 | --- | --- | --- |
-| The shuffle (first screen) | Top of the page on arrival; the heading after "Start again" | Heading "The AuDHD Tarot", button "Hold still" when the cloud is available, button "The deck. Tap, or press any key, to shuffle." (with the cloud: "The deck. Tap, press any key, or drag to shuffle."), the introduction, the instruction line, button "Draw three cards", the privacy line, and a status region |
+| The shuffle (first screen) | Top of the page on arrival; the heading after "Start again" | Heading "The AuDHD Tarot", button "Let the cards feel you move" on a phone showing the cloud, button "Hold still" when the cloud is available, button "The deck. Tap, or press any key, to shuffle." (with the cloud: "The deck. Tap, press any key, or drag to shuffle."), the introduction, the instruction line, button "Draw three cards", the privacy line, and a status region |
 | Shuffling | Stays on the deck | Status region reads the count, such as "5 beats", at most once every two seconds. The row of glyphs is hidden |
 | Options | First choice in the panel | Dialog "Options" with groups "Theme", "Motion" and "Text size", each a set of radio buttons, then "Close options" |
 | Cards dealt | The first card | Heading "Your cards", then three list items: button "Where I am Turn over"; the other two read as their position and "Face down" |
@@ -77,6 +77,11 @@ deck button, the count and the draw are the same with or without it.
   and "Start again" stay within reach.
 - Reduced motion follows the device and can also be chosen in the options. The
   app never turns motion on against the device setting.
+- Moving the phone is never needed and never read unasked. "Let the cards
+  feel you move" is an invitation over the cloud on a device held in the
+  hand; nothing listens to the phone until it is pressed, "Stop following
+  movement" ends it, and it is not remembered between visits. If the person
+  or the device says no, the invitation goes without a message.
 - The cloud of cards is the one thing that moves without being touched. It is
   never shown with reduced motion, "Hold still" on the same screen replaces
   it with the still deck and is remembered, and it stops when the page is

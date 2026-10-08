@@ -79,7 +79,7 @@ The three cards in the cloud are just three of 22 identical backs, so there is n
 
 ### Phone movement
 
-`src/shuffle/tilt.ts` wraps `deviceorientation`. It exposes `available` (the event type exists), `needsPermission` (the iOS `requestPermission` function exists), `start()` and `stop()`. `start()` must be called from a click; on iOS it calls `requestPermission()` first. The first reading after start is taken as level. Values are clamped to ±1 over 35 degrees and smoothed in the scene.
+`src/shuffle/tilt.ts` wraps `deviceorientation`. It exposes `available` (the event type exists and the device has a touch screen, since desktop browsers have the event with no sensor behind it), `needsPermission` (the `requestPermission` function exists, as on iOS and now in Chromium), `start()` and `stop()`. `start()` must be called from a click; where the function exists it calls `requestPermission()` first. If no reading arrives within a second and a half of starting, the device is taken to have no sensor and the invitation is withdrawn without a message. The first reading after start is taken as level. Values are clamped to ±1 over 35 degrees and smoothed in the scene.
 
 The invitation is a button on the cloud, "Let the cards feel you move", shown only when `available`. After acceptance it becomes "Stop following movement". It is not shown with the still deck. Acceptance is not persisted: a fresh visit asks again, which keeps "only after the person has asked" true without a stored flag and matches what iOS requires anyway.
 

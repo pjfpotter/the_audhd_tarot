@@ -35,9 +35,9 @@
 
 ## 5. Phone movement
 
-- [ ] 5.1 Implement `src/shuffle/tilt.ts` (availability, permission, start from a click, first reading as level, clamping, stop) with unit tests using a fake event source; verify the tests pass
-- [ ] 5.2 Add the invitation button to the cloud, shift the scene's view with tilt at the tuned strength, fold a deliberate sway into the number, and let the person stop it; verify by browser test with synthetic orientation events that nothing is read before acceptance, that tilt moves the camera after it, that jitter adds no input, and that stopping ends both
-- [ ] 5.3 Handle a declined or refused permission and a device with no sensor without any error; verify by browser tests that stub the permission call to deny and to throw
+- [x] 5.1 Implement `src/shuffle/tilt.ts` (availability, permission, start from a click, first reading as level, clamping, stop) with unit tests using a fake event source; verify the tests pass
+- [x] 5.2 Add the invitation button to the cloud, shift the scene's view with tilt at the tuned strength, fold a deliberate sway into the number, and let the person stop it; verify by browser test with synthetic orientation events that nothing is read before acceptance, that tilt moves the camera after it, that jitter adds no input, and that stopping ends both
+- [x] 5.3 Handle a declined or refused permission and a device with no sensor without any error; verify by browser tests that stub the permission call to deny and to throw
 - [ ] 5.4 Author check on real phones: accept, decline and stop the invitation on an iPhone and on an Android phone, and record what happened in `docs/ritual-draw.md`; verify both platforms are recorded
 
 ## 6. Retire the prototype
