@@ -1,4 +1,4 @@
-/* The whole screen, behind the top bar and the text; the deck button around it takes the input. */
+/* The whole screen, behind the top bar and the text; the deck button over it takes the input. */
 .cloud {
   position: fixed;
   inset: 0;
@@ -6,10 +6,5 @@
   display: block;
   width: 100%;
   height: 100%;
-  touch-action: none;
-  cursor: grab;
-}
-
-.cloud:active {
-  cursor: grabbing;
+  pointer-events: none;
 }

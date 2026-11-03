@@ -72,6 +72,6 @@ them.
 - **Anchors have not been checked against this art.** Many were written from a
   different deck and may point at details these images do not show.
 - **First-screen copy is a draft.** The introduction, the shuffle's instruction
-  line, the button label and the privacy line
+  lines, the button labels and the privacy line
   in `src/app/copy.ts` were written during the build as placeholders and need
   the author's own words.

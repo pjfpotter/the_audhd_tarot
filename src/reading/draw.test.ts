@@ -1,6 +1,6 @@
 import { describe, expect, test } from 'vitest'
 import { cards } from '../content/cards'
-import { type Random, drawCards, drawReading, selectUnities } from './draw'
+import { type Random, readingFrom, selectUnities } from './draw'
 import { threeCardSpread } from './spread'
 
 /** A repeatable random source (mulberry32), so results do not vary between runs. */
@@ -13,39 +13,6 @@ function seeded(seed: number): Random {
     return Math.floor((((t ^ (t >>> 14)) >>> 0) / 4294967296) * limit)
   }
 }
-
-describe('drawCards', () => {
-  test('draws three different cards', () => {
-    const random = seeded(1)
-    for (let i = 0; i < 2000; i++) {
-      const drawn = drawCards(cards, 3, random)
-      expect(drawn).toHaveLength(3)
-      expect(new Set(drawn).size).toBe(3)
-    }
-  })
-
-  test('every card appears in every position about equally often', () => {
-    const random = seeded(2)
-    const draws = 66_000
-    const counts = [0, 1, 2].map(() => new Array<number>(22).fill(0))
-    for (let i = 0; i < draws; i++) {
-      drawCards(cards, 3, random).forEach((number, position) => counts[position]![number]!++)
-    }
-    const expected = draws / 22
-    for (const position of counts) {
-      for (const count of position) {
-        expect(count).toBeGreaterThan(expected * 0.9)
-        expect(count).toBeLessThan(expected * 1.1)
-      }
-    }
-  })
-
-  test('successive draws differ', () => {
-    const random = seeded(3)
-    const draws = new Set(Array.from({ length: 50 }, () => drawCards(cards, 3, random).join(',')))
-    expect(draws.size).toBeGreaterThan(40)
-  })
-})
 
 describe('selectUnities', () => {
   test('chooses two or three different unities of the card', () => {
@@ -63,14 +30,23 @@ describe('selectUnities', () => {
   })
 })
 
-describe('drawReading', () => {
-  test('has one card for each position, each with its unities chosen', () => {
-    const reading = drawReading(cards, threeCardSpread, seeded(5))
-    expect(reading).toHaveLength(threeCardSpread.positions.length)
-    expect(new Set(reading.map((drawn) => drawn.number)).size).toBe(3)
+describe('readingFrom', () => {
+  test('is exactly the cards chosen, in the order chosen', () => {
+    const reading = readingFrom(cards, [17, 3, 0], seeded(5))
+    expect(reading.map((drawn) => drawn.number)).toEqual([17, 3, 0])
+  })
+
+  test('has each card\'s unities chosen from that card', () => {
+    const reading = readingFrom(cards, [9, 21, 5], seeded(6))
     for (const drawn of reading) {
+      const card = cards.find((candidate) => candidate.number === drawn.number)!
       expect(drawn.unities.length === 2 || drawn.unities.length === 3).toBe(true)
+      for (const unity of drawn.unities) expect(card.unities).toContain(unity)
     }
+  })
+
+  test('refuses a card that is not in the deck', () => {
+    expect(() => readingFrom(cards, [1, 2, 99], seeded(7))).toThrow()
   })
 
   test('the spread names the three positions in order', () => {

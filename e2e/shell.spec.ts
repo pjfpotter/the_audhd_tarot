@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from 'node:fs'
 import { join } from 'node:path'
 import { expect, test } from '@playwright/test'
+import { chooseThree, layOutButton, layOutCards } from './support'
 
 const savePreferences = (preferences: object) =>
   `localStorage.setItem('audhd-tarot:preferences', ${JSON.stringify(JSON.stringify(preferences))})`
@@ -29,9 +30,9 @@ test.describe('name and first screen', () => {
     await expect(page.getByText('Nothing you do here leaves your device.')).toBeVisible()
   })
 
-  test('the primary control deals three cards', async ({ page }) => {
+  test('choosing three cards and laying them out deals them', async ({ page }) => {
     await page.goto('/')
-    await page.getByRole('button', { name: 'Draw three cards' }).click()
+    await layOutCards(page)
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('Your cards')
     await expect(page.getByRole('listitem')).toHaveCount(3)
   })
@@ -39,7 +40,7 @@ test.describe('name and first screen', () => {
   test('the options control is on every screen', async ({ page }) => {
     await page.goto('/')
     await expect(page.getByRole('button', { name: 'Options' })).toBeVisible()
-    await page.getByRole('button', { name: 'Draw three cards' }).click()
+    await layOutCards(page)
     await expect(page.getByRole('button', { name: 'Options' })).toBeVisible()
   })
 })
@@ -52,7 +53,9 @@ test.describe('layout', () => {
       const overflows = () =>
         page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
       expect(await overflows()).toBe(false)
-      await page.getByRole('button', { name: 'Draw three cards' }).click()
+      await chooseThree(page)
+      expect(await overflows()).toBe(false)
+      await layOutButton(page).click()
       expect(await overflows()).toBe(false)
     })
   }
@@ -130,7 +133,7 @@ test.describe('motion', () => {
     await page.goto('/')
     await expect(page.locator('html')).toHaveAttribute('data-motion', 'reduced')
     await page.getByRole('button', { name: /^The deck/ }).click()
-    await page.getByRole('button', { name: 'Draw three cards' }).click()
+    await layOutCards(page)
     const moving = await page.evaluate(() =>
       document.getAnimations().filter((animation) => {
         const effect = animation.effect as KeyframeEffect | null

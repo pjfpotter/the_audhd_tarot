@@ -1,4 +1,5 @@
 import { type Page, expect, test } from '@playwright/test'
+import { chooseButton, layOutCards } from './support'
 
 const html = (page: Page) => page.locator('html')
 const openOptions = (page: Page) => page.getByRole('button', { name: 'Options' }).click()
@@ -53,7 +54,7 @@ test.describe('the panel', () => {
     await expect(panel(page)).toBeHidden()
     await expect(page.getByRole('heading', { level: 1 })).toHaveText('The AuDHD Tarot')
 
-    await page.getByRole('button', { name: 'Draw three cards' }).click()
+    await layOutCards(page)
     await openOptions(page)
     await choose(page, 'Theme', 'Dark')
     await panel(page).getByRole('button', { name: 'Close options' }).click()
@@ -146,7 +147,7 @@ test('at the largest text size on a small phone, everything fits by scrolling do
   expect(await fits('dialog')).toBe(true)
   await panel(page).getByRole('button', { name: 'Close options' }).click()
   expect(await fits('html')).toBe(true)
-  await expect(page.getByRole('button', { name: 'Draw three cards' })).toBeVisible()
-  await page.getByRole('button', { name: 'Draw three cards' }).click()
+  await expect(chooseButton(page)).toBeVisible()
+  await layOutCards(page)
   expect(await fits('html')).toBe(true)
 })

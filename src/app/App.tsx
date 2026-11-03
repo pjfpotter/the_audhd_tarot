@@ -4,10 +4,11 @@ import { OptionsPanel } from '../preferences/OptionsPanel'
 import { CardReveal } from '../reading/CardReveal'
 import { FullReading } from '../reading/FullReading'
 import { Table } from '../reading/Table'
-import { drawReading } from '../reading/draw'
+import { readingFrom } from '../reading/draw'
 import { threeCardSpread as spread } from '../reading/spread'
 import { type DrawnCard, initialState, reducer } from '../reading/state'
 import { Shuffle } from '../shuffle/Shuffle'
+import { deviceRandom } from '../shuffle/random'
 import { Frame } from './Frame'
 
 const cardFor = (drawn: DrawnCard) => deck.find((card) => card.number === drawn.number)!
@@ -42,7 +43,10 @@ export function App() {
         fill={open?.phase === 'art'}
       >
         {state.screen === 'draw' && (
-          <Shuffle onDraw={(random) => dispatch({ type: 'draw', reading: drawReading(deck, spread, random) })} />
+          <Shuffle
+            positions={spread.positions}
+            onDraw={(numbers) => dispatch({ type: 'draw', reading: readingFrom(deck, numbers, deviceRandom) })}
+          />
         )}
 
         {state.screen === 'revealing' && !open && (

@@ -4,17 +4,39 @@
 export const shuffleCopy = {
   intro: 'The major arcana, reread by a late-diagnosed AuDHD adult for the rest of us.',
   hint: {
-    still: 'Tap the deck, or press any key, as often as you like. Every beat rolls the number that picks your cards.',
-    cloud: 'Tap for rhythm. Drag to stir. Every movement changes the number that picks your cards.',
+    mix: {
+      cloud: 'Drag across the cards to mix them. Take as long as you like, then choose.',
+      still: 'Tap the deck to shuffle it. Take as long as you like, then choose.',
+    },
+    choose: {
+      cloud: 'Drag three cards into the spaces. The card you touch is the card you get.',
+      still: 'Tap three cards. The card you touch is the card you get.',
+    },
+    full: 'Three cards chosen. Lay them out when you are ready, or tap one to put it back.',
   },
   deck: {
-    still: 'The deck. Tap, or press any key, to shuffle.',
-    cloud: 'The deck. Tap, press any key, or drag to shuffle.',
+    mix: {
+      cloud: 'The deck. Drag to mix the cards, or press any key.',
+      still: 'The deck. Tap, or press any key, to shuffle.',
+    },
+    choose: {
+      cloud: 'The deck, mixed. Drag a card into a space below, or press Enter to take the card nearest the middle.',
+      still: 'The deck, mixed. Tap, or press any key, to shuffle.',
+    },
   },
-  follow: 'Let the cards feel you move',
-  unfollow: 'Stop following movement',
   hold: 'Hold still',
   move: 'Let it move',
-  draw: 'Draw three cards',
+  choose: 'Choose your cards',
+  mixAgain: 'Mix again',
+  lay: 'Lay out my cards',
   privacy: 'Nothing you do here leaves your device.',
+  status: {
+    choosing: 'Now choose three cards, one for each space.',
+    mixing: 'Mixing again. Your spaces are empty.',
+    left: (n: number) => (n === 1 ? 'One more to choose.' : `${n === 2 ? 'Two' : 'Three'} more to choose.`),
+    all: 'Three cards chosen. Lay them out when you are ready.',
+    full: 'Your three spaces are full. Tap a card in one to put it back.',
+    taken: (position: string) => `${position}: a card is chosen.`,
+    back: (position: string) => `${position}: card put back.`,
+  },
 }

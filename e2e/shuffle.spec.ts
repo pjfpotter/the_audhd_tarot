@@ -1,13 +1,21 @@
-import { type Page, expect, test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
+import { cards } from '../src/content/cards'
+import {
+  chooseButton,
+  chooseThree,
+  deck,
+  faceDownCards,
+  handNow,
+  layOutButton,
+  layOutCards,
+  mixAgainButton,
+} from './support'
 
-const deck = (page: Page) => page.getByRole('button', { name: /^The deck/ })
-const glyphs = (page: Page) => page.locator('[class*="_glyphs_"]')
-const drawButton = (page: Page) => page.getByRole('button', { name: 'Draw three cards' })
-const heading = (page: Page) => page.getByRole('heading', { level: 1 })
+const heading = (page: import('@playwright/test').Page) => page.getByRole('heading', { level: 1 })
+const POSITIONS = ['Where I am', 'How I should travel', "Where I'm going next"]
 
 /** Turns over all three cards and returns their names in position order. */
-async function drawnCards(page: Page) {
-  await drawButton(page).click()
+async function readDrawnCards(page: import('@playwright/test').Page) {
   await expect(heading(page)).toHaveText('Your cards')
   for (const close of ['Back to the cards', 'Back to the cards', 'See the whole reading']) {
     await page.getByRole('button', { name: /Turn over$/ }).click()
@@ -20,60 +28,34 @@ async function drawnCards(page: Page) {
 // The still deck is what reduced motion gets, and what every device has until the cloud is ready.
 test.use({ reducedMotion: 'reduce' })
 
-test.describe('shuffling the still deck', () => {
-  test('the glyphs are eight symbols, hidden from screen readers, with no letters or digits', async ({ page }) => {
+test.describe('mixing the still deck', () => {
+  test('opens on a deck, three empty named spaces, and the way to choose', async ({ page }) => {
     await page.goto('/')
-    const row = (await glyphs(page).innerText()).trim()
-    expect([...row]).toHaveLength(8)
-    expect(row).not.toMatch(/[\p{L}\p{N}]/u)
-    await expect(glyphs(page)).toHaveAttribute('aria-hidden', 'true')
-  })
-
-  test('a tap rolls the glyphs at once', async ({ browser }) => {
-    const context = await browser.newContext({ hasTouch: true, viewport: { width: 360, height: 740 } })
-    const page = await context.newPage()
-    await page.goto('/')
-    const before = await glyphs(page).innerText()
-    await deck(page).tap()
-    await expect(glyphs(page)).not.toHaveText(before)
-    await context.close()
-  })
-
-  test('every key press on the deck is a beat', async ({ page }) => {
-    await page.goto('/')
-    await deck(page).focus()
-    const seen = new Set([await glyphs(page).innerText()])
-    for (const key of ['a', 'Enter', 'Space', 'm']) {
-      await page.keyboard.press(key)
-      seen.add(await glyphs(page).innerText())
-    }
-    expect(seen.size).toBe(5)
-    // Enter and Space shuffled; they did not draw.
     await expect(heading(page)).toHaveText('The AuDHD Tarot')
+    await expect(page.locator('canvas')).toHaveCount(0)
+    await expect(deck(page)).toBeVisible()
+    for (const position of POSITIONS) await expect(page.getByText(position, { exact: false })).toBeVisible()
+    expect(await handNow(page)).toEqual([null, null, null])
+    await expect(chooseButton(page)).toBeVisible()
   })
 
-  test('a press from assistive technology, with no pointer or key, is a beat', async ({ page }) => {
+  test('there is no hidden number, no symbols and no draw button any more', async ({ page }) => {
     await page.goto('/')
-    const before = await glyphs(page).innerText()
-    await deck(page).evaluate((el: HTMLElement) => el.click())
-    await expect(glyphs(page)).not.toHaveText(before)
+    await expect(page.locator('[class*="_glyphs_"]')).toHaveCount(0)
+    await expect(page.getByRole('button', { name: 'Draw three cards' })).toHaveCount(0)
+    await expect(page.getByText('number that picks')).toHaveCount(0)
   })
 
-  test('a single key is enough to shuffle and then draw', async ({ page }) => {
+  test('a tap, any key, or a press from assistive technology shuffles the deck', async ({ page }) => {
     await page.goto('/')
+    await deck(page).click()
     await deck(page).focus()
     await page.keyboard.press('Enter')
-    await page.keyboard.press('Enter')
-    await drawButton(page).focus()
-    await page.keyboard.press('Enter')
-    await expect(heading(page)).toHaveText('Your cards')
-  })
-
-  test('draw works at once, without shuffling', async ({ page }) => {
-    await page.goto('/')
-    await drawButton(page).click()
-    await expect(heading(page)).toHaveText('Your cards')
-    await expect(page.getByRole('listitem')).toHaveCount(3)
+    await page.keyboard.press('s')
+    await deck(page).evaluate((el: HTMLElement) => el.click())
+    // Shuffling is not choosing, and does not draw.
+    await expect(heading(page)).toHaveText('The AuDHD Tarot')
+    expect(await handNow(page)).toEqual([null, null, null])
   })
 
   test('shuffling can go on as long as wanted', async ({ page }) => {
@@ -81,97 +63,15 @@ test.describe('shuffling the still deck', () => {
     await page.goto('/')
     await deck(page).focus()
     for (let minute = 0; minute < 5; minute++) {
-      const before = await glyphs(page).innerText()
       await page.keyboard.press('k')
-      await expect(glyphs(page)).not.toHaveText(before)
       await page.clock.fastForward('01:00')
     }
     await expect(heading(page)).toHaveText('The AuDHD Tarot')
-    await expect(drawButton(page)).toBeVisible()
+    await expect(chooseButton(page)).toBeVisible()
   })
 
-  test('the same beats at the same moments draw the same cards', async ({ browser }) => {
-    const readings: string[][] = []
-    const rows: string[] = []
-    for (let visit = 0; visit < 2; visit++) {
-      const context = await browser.newContext({ reducedMotion: 'reduce' })
-      const page = await context.newPage()
-      await page.clock.install({ time: new Date('2026-01-01T12:00:00') })
-      await page.goto('/')
-      await page.clock.pauseAt(new Date('2026-01-01T12:00:05'))
-      await deck(page).focus()
-      for (const [key, wait] of [['a', 310], ['a', 290], ['Space', 505], ['z', 120]] as const) {
-        await page.keyboard.press(key)
-        await page.clock.runFor(wait)
-      }
-      rows.push(await glyphs(page).innerText())
-      readings.push(await drawnCards(page))
-      await context.close()
-    }
-    expect(rows[1]).toBe(rows[0])
-    expect(readings[0]).toHaveLength(3)
-    expect(readings[1]).toEqual(readings[0])
-  })
-
-  test('a different moment gives a different number', async ({ browser }) => {
-    const rows: string[] = []
-    for (const wait of [310, 311]) {
-      const context = await browser.newContext({ reducedMotion: 'reduce' })
-      const page = await context.newPage()
-      await page.clock.install({ time: new Date('2026-01-01T12:00:00') })
-      await page.goto('/')
-      await page.clock.pauseAt(new Date('2026-01-01T12:00:05'))
-      await deck(page).focus()
-      await page.keyboard.press('a')
-      await page.clock.runFor(wait)
-      await page.keyboard.press('a')
-      rows.push(await glyphs(page).innerText())
-      await context.close()
-    }
-    expect(rows[1]).not.toBe(rows[0])
-  })
-
-  test('two draws without shuffling can differ', async ({ page }) => {
-    const readings = new Set<string>()
+  test('nothing moves: a shuffle is a brief fade and no more', async ({ page }) => {
     await page.goto('/')
-    for (let i = 0; i < 4; i++) {
-      await drawButton(page).click()
-      await page.getByRole('button', { name: /Turn over$/ }).click()
-      readings.add((await heading(page).innerText()).replace(/\s+/g, ' '))
-      await page.getByRole('button', { name: 'Start again' }).click()
-    }
-    expect(readings.size).toBeGreaterThan(1)
-  })
-
-  test('the count of beats is announced politely, and not beat by beat', async ({ page }) => {
-    await page.clock.install()
-    await page.goto('/')
-    const status = page.getByRole('status')
-    await deck(page).focus()
-    for (let i = 0; i < 5; i++) await page.keyboard.press('j')
-    await expect(status).toHaveText('')
-    await page.clock.runFor(2100)
-    await expect(status).toHaveText('5 beats')
-    await page.keyboard.press('j')
-    await expect(status).toHaveText('5 beats')
-    await page.clock.runFor(2100)
-    await expect(status).toHaveText('6 beats')
-  })
-
-  test('starting again starts a new shuffle', async ({ page }) => {
-    await page.goto('/')
-    const fresh = await glyphs(page).innerText()
-    await deck(page).click()
-    await expect(glyphs(page)).not.toHaveText(fresh)
-    await drawButton(page).click()
-    await page.getByRole('button', { name: 'Start again' }).click()
-    await expect(glyphs(page)).toHaveText(fresh)
-    await expect(page.getByRole('status')).toHaveText('')
-  })
-
-  test('nothing moves: a roll is a brief fade and no more', async ({ page }) => {
-    await page.goto('/')
-    await expect(page.locator('canvas')).toHaveCount(0)
     await deck(page).click()
     const animated = await page.evaluate(() =>
       document.getAnimations().flatMap((animation) =>
@@ -183,5 +83,151 @@ test.describe('shuffling the still deck', () => {
     expect(new Set(animated)).toEqual(new Set(['opacity']))
     await page.waitForTimeout(400)
     expect(await page.evaluate(() => document.getAnimations().length)).toBe(0)
+  })
+})
+
+test.describe('choosing from the face-down cards', () => {
+  test('shows 22 face-down cards, with nothing about any of them given away', async ({ page }) => {
+    await page.goto('/')
+    await chooseButton(page).click()
+    await expect(faceDownCards(page)).toHaveCount(22)
+    await expect(deck(page)).toHaveCount(0)
+    // The names are by place in the layout. Nothing says which card is which.
+    const names = await faceDownCards(page).evaluateAll((buttons) =>
+      buttons.map((button) => button.getAttribute('aria-label')),
+    )
+    expect(names[0]).toBe('Card 1 of 22')
+    expect(names[21]).toBe('Card 22 of 22')
+    await expect(page.getByRole('main').locator('img[alt]:not([alt=""])')).toHaveCount(0)
+    const identities = await page.locator('[data-card]').count()
+    expect(identities).toBe(0)
+  })
+
+  test('the card touched is the card in the space', async ({ page }) => {
+    await page.goto('/')
+    await chooseButton(page).click()
+    expect(await handNow(page)).toEqual([null, null, null])
+    await faceDownCards(page).nth(4).click()
+    const [first] = await handNow(page)
+    expect(first).not.toBeNull()
+    // That place in the layout is now marked as chosen and cannot be chosen twice.
+    const chosen = page.getByRole('button', { name: 'Card 5 of 22, chosen' })
+    await expect(chosen).toHaveAttribute('aria-disabled', 'true')
+    await chosen.click({ force: true })
+    expect((await handNow(page)).filter((card) => card !== null)).toHaveLength(1)
+  })
+
+  test('cards go to the spaces in order, three at most, and can be put back', async ({ page }) => {
+    await page.goto('/')
+    await chooseButton(page).click()
+    await expect(layOutButton(page)).toBeDisabled()
+    await faceDownCards(page).first().click()
+    await faceDownCards(page).first().click()
+    const two = await handNow(page)
+    expect(two[0]).not.toBeNull()
+    expect(two[1]).not.toBeNull()
+    expect(two[2]).toBeNull()
+    expect(two[0]).not.toBe(two[1])
+    await expect(layOutButton(page)).toBeDisabled()
+
+    await faceDownCards(page).first().click()
+    await expect(layOutButton(page)).toBeEnabled()
+    // A fourth has no space, and says so.
+    await faceDownCards(page).first().click()
+    expect((await handNow(page)).every((card) => card !== null)).toBe(true)
+    await expect(page.getByRole('status')).toHaveText(/spaces are full/)
+
+    // Tapping a card in a space puts it back, and leaves the others where they were.
+    const [a, , c] = await handNow(page)
+    await page.getByRole('button', { name: 'How I should travel: a card is here. Put it back.' }).click()
+    expect(await handNow(page)).toEqual([a, null, c])
+    await expect(layOutButton(page)).toBeDisabled()
+  })
+
+  test('announces progress politely, by place and never by card', async ({ page }) => {
+    await page.goto('/')
+    const status = page.getByRole('status')
+    await chooseButton(page).click()
+    await expect(status).toHaveText(/choose three cards/i)
+    await faceDownCards(page).first().click()
+    await expect(status).toHaveText('Where I am: a card is chosen. Two more to choose.')
+    await faceDownCards(page).first().click()
+    await expect(status).toHaveText('How I should travel: a card is chosen. One more to choose.')
+    await faceDownCards(page).first().click()
+    await expect(status).toHaveText("Where I'm going next: a card is chosen. Three cards chosen. Lay them out when you are ready.")
+  })
+
+  test('the three cards laid out are the three cards chosen, in the order of the spaces', async ({ page }) => {
+    await page.goto('/')
+    await chooseThree(page)
+    const chosen = await handNow(page)
+    await layOutButton(page).click()
+    const headings = await readDrawnCards(page)
+    expect(headings).toHaveLength(3)
+    chosen.forEach((number, position) => {
+      expect(headings[position]).toContain(cards.find((card) => card.number === number)!.name)
+    })
+  })
+
+  test('mixing again empties the spaces and starts over', async ({ page }) => {
+    await page.goto('/')
+    await chooseThree(page)
+    await mixAgainButton(page).click()
+    expect(await handNow(page)).toEqual([null, null, null])
+    await expect(chooseButton(page)).toBeVisible()
+    await expect(deck(page)).toBeVisible()
+    await expect(page.getByRole('status')).toHaveText(/spaces are empty/)
+  })
+
+  test('the layout is different each time, so no two shuffles start alike', async ({ page }) => {
+    const firsts = new Set<number | null>()
+    await page.goto('/')
+    for (let i = 0; i < 8; i++) {
+      await chooseButton(page).click()
+      await faceDownCards(page).first().click()
+      firsts.add((await handNow(page))[0]!)
+      await mixAgainButton(page).click()
+    }
+    expect(firsts.size).toBeGreaterThan(2)
+  })
+
+  test('two readings in a row are chosen afresh', async ({ page }) => {
+    const readings = new Set<string>()
+    await page.goto('/')
+    for (let i = 0; i < 4; i++) {
+      await layOutCards(page)
+      await page.getByRole('button', { name: /Turn over$/ }).click()
+      readings.add((await heading(page).innerText()).replace(/\s+/g, ' '))
+      await page.getByRole('button', { name: 'Start again' }).click()
+    }
+    expect(readings.size).toBeGreaterThan(1)
+  })
+
+  test('starting again leaves empty spaces and a fresh deck', async ({ page }) => {
+    await page.goto('/')
+    await layOutCards(page)
+    await page.getByRole('button', { name: 'Start again' }).click()
+    expect(await handNow(page)).toEqual([null, null, null])
+    await expect(chooseButton(page)).toBeVisible()
+    await expect(page.getByRole('status')).toHaveText('')
+  })
+
+  test('the whole thing can be done by keyboard alone', async ({ page }) => {
+    await page.goto('/')
+    await deck(page).focus()
+    await page.keyboard.press('Enter')
+    await chooseButton(page).focus()
+    await page.keyboard.press('Enter')
+    // Focus moves to the cards, and Enter takes one; the chosen card keeps focus, so Tab goes on to the next.
+    await expect(faceDownCards(page).first()).toBeFocused()
+    await page.keyboard.press('Enter')
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Enter')
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Enter')
+    expect((await handNow(page)).every((card) => card !== null)).toBe(true)
+    await expect(layOutButton(page)).toBeFocused()
+    await page.keyboard.press('Space')
+    await expect(heading(page)).toHaveText('Your cards')
   })
 })

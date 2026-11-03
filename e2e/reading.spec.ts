@@ -1,4 +1,5 @@
 import { type Page, expect, test } from '@playwright/test'
+import { chooseButton, chooseThree, layOutButton, layOutCards } from './support'
 
 const POSITIONS = ['Where I am', 'How I should travel', "Where I'm going next"]
 const ART_BEAT_MS = 1800
@@ -7,7 +8,7 @@ const enter = (page: Page) => page.goto('/')
 
 async function draw(page: Page) {
   await enter(page)
-  await page.getByRole('button', { name: 'Draw three cards' }).click()
+  await layOutCards(page)
 }
 
 const turnOver = (page: Page) => page.getByRole('button', { name: /Turn over$/ }).click()
@@ -25,7 +26,7 @@ async function completeReading(page: Page) {
 }
 
 test.describe('the draw', () => {
-  test('one click draws three face-down cards in the named positions', async ({ page }) => {
+  test('laying out the chosen cards gives three face-down cards in the named positions', async ({ page }) => {
     await draw(page)
     await expect(heading(page)).toHaveText('Your cards')
     const slots = page.getByRole('listitem')
@@ -38,17 +39,19 @@ test.describe('the draw', () => {
   for (const key of ['Enter', 'Space']) {
     test(`${key} draws`, async ({ page }) => {
       await enter(page)
-      await page.getByRole('button', { name: 'Draw three cards' }).focus()
+      await chooseThree(page)
+      await layOutButton(page).focus()
       await page.keyboard.press(key)
       await expect(heading(page)).toHaveText('Your cards')
     })
   }
 
-  test('a single tap draws', async ({ browser }) => {
+  test('a single tap lays the cards out', async ({ browser }) => {
     const context = await browser.newContext({ hasTouch: true, viewport: { width: 360, height: 740 } })
     const page = await context.newPage()
     await enter(page)
-    await page.getByRole('button', { name: 'Draw three cards' }).tap()
+    await chooseThree(page)
+    await layOutButton(page).tap()
     await expect(heading(page)).toHaveText('Your cards')
     await context.close()
   })
@@ -82,7 +85,7 @@ test.describe('the draw', () => {
       await turnOver(page)
       names.add((await heading(page).innerText()).replace(/\s+/g, ' '))
       await page.getByRole('button', { name: 'Start again' }).click()
-      await page.getByRole('button', { name: 'Draw three cards' }).click()
+      await layOutCards(page)
     }
     expect(names.size).toBeGreaterThan(1)
   })
@@ -250,7 +253,7 @@ test.describe('the full reading', () => {
     await page.getByRole('button', { name: 'Start a new reading' }).click()
     await expect(heading(page)).toHaveText('The AuDHD Tarot')
     await expect(page.getByRole('main').locator('img:not([src$="back.webp"])')).toHaveCount(0)
-    await expect(page.getByRole('button', { name: 'Draw three cards' })).toBeVisible()
+    await expect(chooseButton(page)).toBeVisible()
   })
 
   test('nothing is lost or dismissed when the screen is left alone', async ({ page }) => {
