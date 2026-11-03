@@ -1,3 +1,5 @@
+> **Partly superseded by `choose-your-cards`** (2026-11-03): the hidden number, the glyph row and phone tilt were replaced by mixing and then choosing three cards. The cloud, the still deck, the card back and the first-screen layout remain.
+
 # Proposal
 
 ## Why

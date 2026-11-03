@@ -1,5 +1,4 @@
 import type { CardText, Unity } from '../content/types'
-import type { Spread } from './spread'
 import type { Reading } from './state'
 
 /** Returns a whole number from 0 up to, but not including, `limit`, each equally likely. */
@@ -13,11 +12,6 @@ function pick<T>(items: readonly T[], count: number, random: Random): T[] {
     picked.push(...pool.splice(random(pool.length), 1))
   }
   return picked
-}
-
-/** Draws `count` different cards from the deck and returns their numbers in the order drawn. */
-export function drawCards(deck: readonly CardText[], count: number, random: Random): number[] {
-  return pick(deck, count, random).map((card) => card.number)
 }
 
 /**
@@ -35,11 +29,15 @@ export function selectUnities(
   return pick(card.unities, count, random)
 }
 
-/** Draws a whole reading: one card for each position, with its unities chosen once. */
-export function drawReading(deck: readonly CardText[], spread: Spread, random: Random): Reading {
-  const numbers = drawCards(deck, spread.positions.length, random)
-  return numbers.map((number, positionIndex) => ({
-    number,
-    unities: selectUnities(deck.find((card) => card.number === number)!, positionIndex, numbers, random),
-  }))
+/**
+ * Makes a reading from the cards a person chose, one for each position of the
+ * spread, in that order. The cards are the person's own choice; only the
+ * unities shown for each are picked at random.
+ */
+export function readingFrom(deck: readonly CardText[], numbers: readonly number[], random: Random): Reading {
+  return numbers.map((number, positionIndex) => {
+    const card = deck.find((candidate) => candidate.number === number)
+    if (!card) throw new Error(`There is no card ${number}`)
+    return { number, unities: selectUnities(card, positionIndex, numbers, random) }
+  })
 }

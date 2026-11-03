@@ -15,12 +15,16 @@ options panel and the full-size card image, in both themes:
 - Reading text is at least 16px and no text is under 14px.
 - Every control has a name and every image has alt text.
 - With reduced motion, no animation runs at all, apart from a brief fade of
-  the glyph row when the deck is shuffled.
-- The shuffle works by tap, by any key, and by a press that arrives with no
+  the deck when it is shuffled.
+- Mixing works by tap, by any key, and by a press that arrives with no
   pointer or key behind it, as assistive technology sends.
+- Choosing works by tapping face-down cards, and in the cloud by Enter on the
+  deck as well as by dragging. The third card chosen moves focus to "Lay out
+  my cards", so a keyboard does not have to Tab past the rest.
 - The cloud of cards: the keyboard run and the axe audit are repeated with
-  it showing, it gives way to the still deck when it cannot run, it draws
-  no frames while the page is hidden, and "Hold still" stops it at once.
+  it showing, while mixing and while choosing; it gives way to the face-down
+  cards when it cannot run, keeping what was chosen; it draws no frames while
+  the page is hidden; and "Hold still" stops it at once.
 - Nothing is lost when a screen is left untouched for ten minutes.
 
 `npm test` checks that every text and background colour pairing in both themes
@@ -33,8 +37,9 @@ recording of a screen reader speaking it.
 
 | Step | Focus moves to | What is exposed |
 | --- | --- | --- |
-| The shuffle (first screen) | Top of the page on arrival; the heading after "Start again" | Heading "The AuDHD Tarot", button "Let the cards feel you move" on a phone showing the cloud, button "Hold still" when the cloud is available, button "The deck. Tap, or press any key, to shuffle." (with the cloud: "The deck. Tap, press any key, or drag to shuffle."), the introduction, the instruction line, button "Draw three cards", the privacy line, and a status region |
-| Shuffling | Stays on the deck | Status region reads the count, such as "5 beats", at most once every two seconds. The row of glyphs is hidden |
+| Mixing (first screen) | Top of the page on arrival; the heading after "Start again" | Heading "The AuDHD Tarot", button "Hold still" when the cloud is available, button "The deck. Tap, or press any key, to shuffle." (with the cloud: "The deck. Drag to mix the cards, or press any key."), a list "Your cards" of three empty spaces named "Where I am", "How I should travel" and "Where I'm going next", the introduction, the instruction line, button "Choose your cards", the privacy line, and a status region |
+| Choosing | The first face-down card, or the deck with the cloud | A list "The deck, face down" of 22 buttons "Card 1 of 22" and so on, named by place in the layout and never by which card it is; or, with the cloud, the deck button "The deck, mixed. Drag a card into a space below, or press Enter to take the card nearest the middle." A chosen card reads "Card 5 of 22, chosen" and is disabled. Each filled space is a button "Where I am: a card is here. Put it back." The status region says which space was filled and how many are left, and never which card. Buttons "Mix again" and "Lay out my cards" (disabled until three are chosen) |
+| Three cards chosen | "Lay out my cards" | The status region says "Three cards chosen. Lay them out when you are ready." |
 | Options | First choice in the panel | Dialog "Options" with groups "Theme", "Motion" and "Text size", each a set of radio buttons, then "Close options" |
 | Cards dealt | The first card | Heading "Your cards", then three list items: button "Where I am Turn over"; the other two read as their position and "Face down" |
 | Card turned over | The card's heading | Heading such as "Where I am XXI The World", described by the image description; then the aliases and button "Continue" |
@@ -47,12 +52,15 @@ Nothing about a card is exposed before it is turned over. Card thumbnails carry
 empty alt text because the card's name is in text beside them. The card back
 carries empty alt text too: it is the same on every card and says nothing.
 
-On the deck, every key except Tab is a beat, including Enter and Space, so
-those two shuffle and do not draw. Drawing is the separate button after it.
-With the cloud showing, the arrow keys also stir it.
+While mixing, every key except Tab is a press on the deck, including Enter and
+Space. With the cloud showing, the arrow keys also stir it. While choosing in
+the cloud, Enter and Space take the card nearest the middle, the arrow keys
+still stir, and other keys take nothing. The cards are face down and look
+alike, so choosing by position and choosing by touch give the same fairness.
 
-The cloud is a canvas hidden from screen readers. It is decoration: the
-deck button, the count and the draw are the same with or without it.
+The cloud is a canvas hidden from screen readers. It is a picture of the
+same choice the face-down cards give: nothing in it carries information they
+lack.
 
 ## Still to do by hand
 
@@ -62,9 +70,10 @@ deck button, the count and the draw are the same with or without it.
   with the heading on each screen reader. Go through the shuffle, all three
   reveals, the full reading and the options panel, and note anything
   unnamed, out of order or silent. On the shuffle, check in particular that
-  pressing the deck from the screen reader rolls the count, that the count
-  is spoken without interrupting, and that a screen reader's own keys still
-  work while the deck has focus.
+  pressing the deck from the screen reader mixes it, that choosing a card
+  is announced by place and without interrupting, that focus moving to "Lay
+  out my cards" after the third card is announced, and that a screen
+  reader's own keys still work while the deck has focus.
 - The 22 image descriptions in `src/content/imageDescriptions.ts` describe the
   placeholder art and need the author's review.
 
@@ -77,11 +86,10 @@ deck button, the count and the draw are the same with or without it.
   and "Start again" stay within reach.
 - Reduced motion follows the device and can also be chosen in the options. The
   app never turns motion on against the device setting.
-- Moving the phone is never needed and never read unasked. "Let the cards
-  feel you move" is an invitation over the cloud on a device held in the
-  hand; nothing listens to the phone until it is pressed, "Stop following
-  movement" ends it, and it is not remembered between visits. If the person
-  or the device says no, the invitation goes without a message.
+- The app does not read the phone's movement. It once offered to, and that
+  was removed with the hidden number it fed.
+- Choosing a card never depends on dragging. Every card can be taken by
+  tapping it where there is no cloud, and by Enter in the cloud.
 - The cloud of cards is the one thing that moves without being touched. It is
   never shown with reduced motion, "Hold still" on the same screen replaces
   it with the still deck and is remembered, and it stops when the page is

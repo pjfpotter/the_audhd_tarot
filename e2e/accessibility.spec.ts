@@ -1,5 +1,6 @@
 import AxeBuilder from '@axe-core/playwright'
 import { type Page, expect, test } from '@playwright/test'
+import { chooseButton, faceDownCards, handNow, layOutButton, settled, takeThree } from './support'
 
 const THEMES = ['light', 'dark'] as const
 
@@ -27,19 +28,31 @@ async function expectFocusRing(page: Page) {
 
 for (const theme of THEMES) {
   test(`a whole reading by keyboard alone, ${theme} theme`, async ({ page }) => {
-    await page.emulateMedia({ colorScheme: theme })
+    // The face-down cards are the keyboard's way in; the cloud's own keyboard use is tested with the cloud.
+    await page.emulateMedia({ colorScheme: theme, reducedMotion: 'reduce' })
     await page.goto('/')
     const heading = page.getByRole('heading', { level: 1 })
 
     // The deck is shuffled by any key, and Tab still leaves it.
     await tabTo(page, /^The deck/)
-    const glyphs = page.locator('[class*="_glyphs_"]')
-    const before = await glyphs.innerText()
     await page.keyboard.press('Enter')
     await page.keyboard.press('s')
-    await expect(glyphs).not.toHaveText(before)
 
-    await tabTo(page, 'Draw three cards')
+    await tabTo(page, 'Choose your cards')
+    await page.keyboard.press('Space')
+    // Focus moves to the cards. A chosen card keeps focus, so Tab goes on to the next.
+    await expect(faceDownCards(page).first()).toBeFocused()
+    await expectFocusRing(page)
+    await page.keyboard.press('Enter')
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Enter')
+    await page.keyboard.press('Tab')
+    await page.keyboard.press('Enter')
+    expect((await handNow(page)).every((card) => card !== null)).toBe(true)
+
+    // The third card chosen takes focus to the way forward, rather than leaving it to be Tabbed to past the rest.
+    await expect(layOutButton(page)).toBeFocused()
+    await expectFocusRing(page)
     await page.keyboard.press('Space')
     await expect(heading).toHaveText('Your cards')
 
@@ -70,13 +83,15 @@ for (const theme of THEMES) {
     await tabTo(page, 'Start a new reading')
     await page.keyboard.press('Enter')
     await expect(heading).toHaveText('The AuDHD Tarot')
-    await expect(glyphs).toHaveText(before)
+    expect(await handNow(page)).toEqual([null, null, null])
+    await expect(chooseButton(page)).toBeVisible()
   })
 }
 
 /** Runs `check` on every screen of the app, including both dialogs. */
 async function onEveryScreen(page: Page, check: (screen: string) => Promise<void>) {
   await page.goto('/')
+  await settled(page)
   await check('shuffle')
 
   await page.getByRole('button', { name: 'Options' }).click()
@@ -84,9 +99,15 @@ async function onEveryScreen(page: Page, check: (screen: string) => Promise<void
   await page.keyboard.press('Escape')
 
   await page.getByRole('button', { name: /^The deck/ }).click()
-  await check('shuffle, after a beat')
+  await check('shuffle, after a touch')
 
-  await page.getByRole('button', { name: 'Draw three cards' }).click()
+  await chooseButton(page).click()
+  await check('choosing')
+
+  await takeThree(page)
+  await check('three cards chosen')
+
+  await layOutButton(page).click()
   await check('cards face down')
 
   await page.getByRole('button', { name: /Turn over$/ }).click()

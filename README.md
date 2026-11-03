@@ -10,16 +10,27 @@ stay on your device.
 
 ## The shuffle
 
-The app opens on the shuffle. The deck is a cloud of 22 face-down cards:
-tap or press any key for rhythm, drag to stir, and on a phone you can let the
-cards follow its movement. Every one of those is folded into a hidden number,
-shown as a row of eight glyphs, and that number alone picks the three cards.
-The device adds no randomness of its own; pressing draw counts as an input, so
-one press is still a complete reading.
+The app opens on the shuffle, in the two parts a reader gives one.
+
+**Mixing.** The deck is a cloud of 22 face-down cards. Drag across it to stir
+the cards under your finger; tap to nudge the ones nearest. The cloud starts
+differently every time, and a touch only disturbs the cards close to it, so
+nothing is thrown out of the screen. Take as long as you like, then choose.
+
+**Choosing.** Drag three cards into the three spaces, named for the positions
+of the reading. The card you touch is the card you get: every card in the cloud
+is one particular card from the moment it appears, and nothing is decided after
+you choose. Tap a card in a space to put it back.
 
 With reduced motion, on a device that cannot run the 3D scene, or after
-pressing "Hold still", the cloud is replaced by a still deck that shuffles the
-same way.
+pressing "Hold still", the cloud is replaced by a still deck to tap, and then
+by the 22 cards laid out face down to choose from. Both are the same choice:
+the cards' places are shuffled at random, and which card is which is hidden.
+Choosing never needs a drag: Enter takes the card nearest the middle of the
+cloud, and the face-down cards are plain buttons.
+
+Nothing is derived from how a person taps or moves. The cards are dealt to
+their places by the device's own randomness, and the person chooses.
 
 The cloud is drawn with [three.js](https://threejs.org/), the app's one
 runtime dependency besides React. It is bundled with the app, in its own file,
@@ -62,15 +73,15 @@ project, so every push to `main` builds and deploys by itself.
 | `src/reading/` | The draw, the reading state and the reading screens |
 | `src/preferences/` | Theme, motion and text size options |
 | `src/app/` | The page frame and the app's wording |
-| `src/shuffle/` | The first screen: the shuffle, its hidden number, the still deck and phone movement |
-| `src/shuffle/cloud/` | The cloud of cards: the three.js scene and its tuned settings |
-| `prototypes/ritual-cloud/` | The throwaway prototype the cloud was tuned in; published at `/prototypes/ritual-cloud/` until the cloud has been checked against it |
+| `src/shuffle/` | The first screen: mixing and choosing, the three spaces, the still deck and the face-down cards, and the device's randomness |
+| `src/shuffle/cloud/` | The cloud of cards: the three.js scene, how it moves, and its settings |
+| `prototypes/ritual-cloud/` | The throwaway prototype the cloud was first tuned in; published at `/prototypes/ritual-cloud/`, and no longer the reference for how the cloud should feel |
 | `src/styles/` | Design tokens, fonts and base styles |
 | `public/cards/` | Card images, named by card number |
 | `art/source/` | Full-size originals of the card art; not part of the app |
 | `content/README.md` | Where the text came from, and how to edit text and art |
 | `docs/accessibility.md` | What is checked, and what still needs checking by hand |
-| `docs/ritual-draw.md` | The checks of the cloud and of phone movement that need a real phone |
+| `docs/ritual-draw.md` | The checks of the cloud and of choosing that need a real phone |
 | `openspec/` | Specs and change proposals |
 
 ## Planned next
