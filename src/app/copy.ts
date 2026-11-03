@@ -5,8 +5,8 @@ export const shuffleCopy = {
   intro: 'The major arcana, reread by a late-diagnosed AuDHD adult for the rest of us.',
   hint: {
     mix: {
-      cloud: 'Drag across the cards to mix them. Take as long as you like, then choose.',
-      still: 'Tap the deck to shuffle it. Take as long as you like, then choose.',
+      cloud: 'Shuffle the deck.',
+      still: 'Shuffle the deck.',
     },
     choose: {
       cloud: 'Drag three cards into the spaces. The card you touch is the card you get.',
@@ -16,7 +16,7 @@ export const shuffleCopy = {
   },
   deck: {
     mix: {
-      cloud: 'The deck. Drag to mix the cards, or press any key.',
+      cloud: 'The deck. Drag to shuffle the cards, or press any key.',
       still: 'The deck. Tap, or press any key, to shuffle.',
     },
     choose: {
@@ -26,13 +26,13 @@ export const shuffleCopy = {
   },
   hold: 'Hold still',
   move: 'Let it move',
-  choose: 'Choose your cards',
-  mixAgain: 'Mix again',
+  choose: 'Draw cards',
+  mixAgain: 'Shuffle again',
   lay: 'Lay out my cards',
   privacy: 'Nothing you do here leaves your device.',
   status: {
     choosing: 'Now choose three cards, one for each space.',
-    mixing: 'Mixing again. Your spaces are empty.',
+    mixing: 'Shuffling again. Your spaces are empty.',
     left: (n: number) => (n === 1 ? 'One more to choose.' : `${n === 2 ? 'Two' : 'Three'} more to choose.`),
     all: 'Three cards chosen. Lay them out when you are ready.',
     full: 'Your three spaces are full. Tap a card in one to put it back.',

@@ -95,7 +95,7 @@ export function Shuffle({
   // The cloud shows the hand once it is there to show it, and again wherever the hand has moved to.
   useEffect(() => {
     scene.current?.setHand(hand)
-  }, [hand, mode, handFirst])
+  }, [hand, mode, handFirst, phase])
 
   // When the shuffle moves on, so does the keyboard.
   const lastPhase = useRef(phase)
@@ -273,7 +273,8 @@ export function Shuffle({
 
   const hint = full && phase === 'choose' ? shuffleCopy.hint.full : shuffleCopy.hint[phase][mode]
 
-  const handView = (
+  // The spaces are not there while the deck is being shuffled: that part is the cloud alone.
+  const handView = phase === 'mix' ? null : (
     <Hand
       positions={positions}
       hand={hand}

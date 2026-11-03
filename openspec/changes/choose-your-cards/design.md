@@ -14,9 +14,9 @@ The whole spiral is also turned by a random angle and each card starts a little 
 
 ### Two parts, one set of three spaces
 
-The first part mixes; the second chooses. The three spaces are DOM, below the cloud and over the canvas, with nothing behind them but the canvas, so that a card placed in one is seen through it. The scene is told where the spaces are on the screen (`slots()` in pixels, asked again on resize, scroll and whenever the hand changes), turns each into a point and a size at a fixed depth, and moves the card there. The spaces are shown in both parts (dimmed while mixing) so the layout does not move between them and the goal is visible.
+The first part mixes; the second chooses. The three spaces are DOM, below the cloud and over the canvas, with nothing behind them but the canvas, so that a card placed in one is seen through it. The scene is told where the spaces are on the screen (`slots()` in pixels, asked again on resize, scroll and whenever the hand changes), turns each into a point and a size at a fixed depth, and moves the card there. The spaces appear only when drawing begins: test users wanted the shuffle to be the cloud and nothing else, with a clear change when the draw starts. The scene re-reads the spaces whenever the part changes.
 
-React owns the hand (an array of three card numbers or null). The scene only knows where each card should be. A card dropped over a space goes into the nearest empty one; dropped anywhere else it drifts back into the cloud. Tapping a card in a space puts it back; "Mix again" empties the spaces.
+React owns the hand (an array of three card numbers or null). The scene only knows where each card should be. A card dropped over a space goes into the nearest empty one; dropped anywhere else it drifts back into the cloud. Tapping a card in a space puts it back; "Shuffle again" empties the spaces.
 
 ### A touch is local and bounded
 
@@ -28,6 +28,10 @@ The first cloud used a Gaussian reach of about three scene units, wider than the
 
 The containment is pure (`motion.ts`) and unit tested with a hard shove every frame. The strengths are a first guess to be tuned on a phone.
 
+### The pile: shuffling changes what is on top
+
+A card's depth was fixed by its home, so stirring only moved cards sideways and the same cards stayed on top. A stirred card is now sometimes sent to a new random depth, more often the harder and the nearer the finger, and slides there. Cards are drawn far to near, each over the last (depth test off, `renderOrder` from the pile), so they never cut into one another however they tilt; the card taken by a touch is the one drawn on top.
+
 ### Taking hold
 
 In the second part a press raycasts the cards that are still in the cloud and takes the frontmost hit, which is the card on top of the pile as the person sees it. Anything else is still a stir. The card is held at a fixed depth, in front of the cloud and slightly larger than a space, 44 px above the fingertip so the finger does not cover it. The pointer is captured on the deck button so the drag continues beyond it.
@@ -38,7 +42,7 @@ A second presentation of the same choice: the deck is a stack to tap that reshuf
 
 ### Focus and announcements
 
-"Choose your cards" and "Mix again" move focus to the first control in the stage. The third card chosen moves focus to "Lay out my cards" so a keyboard does not Tab past 19 cards. A status region says which space was filled and how many are left, never which card.
+"Draw cards" and "Shuffle again" move focus to the first control in the stage. The third card chosen moves focus to "Lay out my cards" so a keyboard does not Tab past 19 cards. A status region says which space was filled and how many are left, never which card.
 
 ### No hidden number
 
@@ -54,4 +58,4 @@ Nothing is derived from a person's timing or position any more. Randomness is th
 ## Open Questions
 
 - Wording of the instruction lines and buttons, as drafts in `src/app/copy.ts`.
-- Whether "Mix again" should shuffle the cloud's identities again, or only the positions as now.
+- Whether "Shuffle again" should shuffle the cloud's identities again, or only the positions as now.

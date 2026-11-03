@@ -17,6 +17,12 @@
 - [x] 3.1 Rebuild `Shuffle.tsx` in two parts with `Hand.tsx` (three named spaces) and `Fan.tsx` (face-down cards); move focus on each change of part and to "Lay out my cards" when three are chosen; announce progress by place
 - [x] 3.2 Replace the draw button and hidden-number copy in `src/app/copy.ts` with drafts marked for the author's review; pass chosen numbers from `App.tsx` to `readingFrom`
 
+## 3b. After the first test on a phone
+
+- [x] 3b.1 Make the first part the cloud alone: no spaces, the instruction "Shuffle the deck.", the button "Draw cards"; the spaces appear with the draw
+- [x] 3b.2 Strengthen ripple and stir, and widen how far a touch reaches
+- [x] 3b.3 Let stirring change the order of the pile, and draw cards far to near so they never cut into each other
+
 ## 4. Tests and documents
 
 - [x] 4.1 Rewrite the browser tests for the still deck and for the cloud: mixing, containment after a hard scrub, no two clouds alike, choosing by drag, by keyboard and by tapping, the reading matching the hand, putting back, full spaces, mixing again, loading, fallbacks and holding still keeping the hand; extend the axe, target-size and text-size runs to choosing

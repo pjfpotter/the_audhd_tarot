@@ -29,14 +29,25 @@ async function readDrawnCards(page: import('@playwright/test').Page) {
 test.use({ reducedMotion: 'reduce' })
 
 test.describe('mixing the still deck', () => {
-  test('opens on a deck, three empty named spaces, and the way to choose', async ({ page }) => {
+  test('opens on the deck alone, with the instruction to shuffle it and a button to draw', async ({ page }) => {
     await page.goto('/')
     await expect(heading(page)).toHaveText('The AuDHD Tarot')
     await expect(page.locator('canvas')).toHaveCount(0)
     await expect(deck(page)).toBeVisible()
+    await expect(page.getByText('Shuffle the deck.')).toBeVisible()
+    // The spaces for the cards belong to drawing, and are not there while shuffling.
+    await expect(page.locator('[data-slot]')).toHaveCount(0)
+    for (const position of POSITIONS) await expect(page.getByText(position, { exact: false })).toHaveCount(0)
+    await expect(chooseButton(page)).toBeVisible()
+  })
+
+  test('drawing brings in the three named spaces', async ({ page }) => {
+    await page.goto('/')
+    await chooseButton(page).click()
+    await expect(page.locator('[data-slot]')).toHaveCount(3)
     for (const position of POSITIONS) await expect(page.getByText(position, { exact: false })).toBeVisible()
     expect(await handNow(page)).toEqual([null, null, null])
-    await expect(chooseButton(page)).toBeVisible()
+    await expect(page.getByText('Shuffle the deck.')).toHaveCount(0)
   })
 
   test('there is no hidden number, no symbols and no draw button any more', async ({ page }) => {
@@ -53,9 +64,9 @@ test.describe('mixing the still deck', () => {
     await page.keyboard.press('Enter')
     await page.keyboard.press('s')
     await deck(page).evaluate((el: HTMLElement) => el.click())
-    // Shuffling is not choosing, and does not draw.
+    // Shuffling is not drawing.
     await expect(heading(page)).toHaveText('The AuDHD Tarot')
-    expect(await handNow(page)).toEqual([null, null, null])
+    await expect(page.locator('[data-slot]')).toHaveCount(0)
   })
 
   test('shuffling can go on as long as wanted', async ({ page }) => {
@@ -169,17 +180,17 @@ test.describe('choosing from the face-down cards', () => {
     })
   })
 
-  test('mixing again empties the spaces and starts over', async ({ page }) => {
+  test('shuffling again takes the cards back and starts over', async ({ page }) => {
     await page.goto('/')
     await chooseThree(page)
     await mixAgainButton(page).click()
-    expect(await handNow(page)).toEqual([null, null, null])
+    await expect(page.locator('[data-slot]')).toHaveCount(0)
     await expect(chooseButton(page)).toBeVisible()
     await expect(deck(page)).toBeVisible()
     await expect(page.getByRole('status')).toHaveText(/spaces are empty/)
   })
 
-  test('the layout is different each time, so no two shuffles start alike', async ({ page }) => {
+  test('the layout is different each time, so no two draws start alike', async ({ page }) => {
     const firsts = new Set<number | null>()
     await page.goto('/')
     for (let i = 0; i < 8; i++) {
@@ -207,7 +218,7 @@ test.describe('choosing from the face-down cards', () => {
     await page.goto('/')
     await layOutCards(page)
     await page.getByRole('button', { name: 'Start again' }).click()
-    expect(await handNow(page)).toEqual([null, null, null])
+    await expect(page.locator('[data-slot]')).toHaveCount(0)
     await expect(chooseButton(page)).toBeVisible()
     await expect(page.getByRole('status')).toHaveText('')
   })

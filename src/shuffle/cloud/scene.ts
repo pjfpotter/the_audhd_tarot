@@ -41,7 +41,7 @@ const HAND_Z = 3
 /** How far forward a card is held while it is being carried. */
 const HELD_Z = 3.4
 /** The fastest a card in the cloud may travel, in scene units a second. */
-const MAX_SPEED = 4
+const MAX_SPEED = 6
 /** How far above the fingertip a carried card is held, so that the finger does not cover it. */
 const LIFT_PX = 44
 /** How much larger than its place in the hand a carried card is. */
@@ -179,6 +179,8 @@ export function createCloud({
     map: backTexture,
     side: DoubleSide,
     alphaTest: 0.5, // the art has rounded, transparent corners
+    // Cards are drawn far to near, each over the last, and never cut into one another however they tilt.
+    depthTest: false,
   })
 
   const spread = () => random() * 2 - 1
@@ -207,6 +209,8 @@ export function createCloud({
       slot: null as number | null,
       /** Whether a finger is carrying it. */
       held: false,
+      /** Where the card is in the pile, from 0 at the back; the frame keeps this up to date. */
+      rank: 0,
       /** How much of the squared-up pose of a card in the hand it still has, fading once it is back in the cloud. */
       squared: 0,
     }
@@ -231,7 +235,8 @@ export function createCloud({
     const f = (CAM_Z - z) / CAM_Z
     // A whole card, and a little over, stays on the screen at each side.
     const across = Math.min(view.w * 0.46, view.w / 2 - CARD_W * 0.7) * f
-    const up = Math.max(view.stageH / 2 - CARD_H * 0.1, homeReach() * 1.15)
+    // A card stopped at the top or bottom is still mostly in view, not half under the buttons.
+    const up = Math.max(view.stageH / 2 - CARD_H * 0.45, homeReach() * 1.02)
     return { halfWidth: across, top: (view.centreY + up) * f, bottom: (view.centreY - up) * f }
   }
 
@@ -345,7 +350,19 @@ export function createCloud({
 
   // ---------------------------------------------------------------- touch
   /** The farthest from a touch, in scene units, that a card feels it. */
-  const FEEL = 1.1
+  const FEEL = 1.5
+
+  /**
+   * Shuffling must change which cards are on top, so a card that is stirred
+   * may be sent to a new depth in the pile, at random. `chance` is how likely
+   * that is for this card, this time.
+   */
+  function shake(card: CloudCard, chance: number) {
+    if (random() >= chance) return
+    card.unit.z = spread()
+    // Carried to its new depth over a moment, so it slides through the pile and does not jump.
+    card.v.z += (((card.unit.z * 4 - 2) * settings.depth - card.p.z) * 2.5)
+  }
 
   function ripple(clientX: number, clientY: number) {
     aim(clientX, clientY)
@@ -360,6 +377,7 @@ export function createCloud({
       push.normalize().multiplyScalar(2.6 * s * fall)
       push.z += (random() - 0.5) * 1.5 * s * fall
       card.v.add(push)
+      shake(card, Math.min(1, 0.5 * s * fall))
       card.w.x += (random() - 0.5) * 4 * s * fall
       card.w.y += (random() - 0.5) * 5 * s * fall
       card.w.z += (random() - 0.5) * 2 * s * fall
@@ -391,12 +409,15 @@ export function createCloud({
 
   function carry(dx: number, dy: number) {
     const s = settings.stir
+    // A slow touch barely shuffles; a brisk one does.
+    const brisk = Math.min(1, Math.hypot(dx, dy) / 0.015)
     for (const card of cards) {
       if (!free(card)) continue
       nearestOnRay(card.p)
       push.copy(card.p).sub(near)
       const d = push.length()
       const fall = Math.exp(-(d * d) / FEEL)
+      shake(card, 0.2 * brisk * fall)
       card.v.x += dx * 22 * s * fall
       card.v.y += dy * 22 * s * fall
       // Winding: a sideways shove at right angles to the offset from the pointer.
@@ -427,11 +448,16 @@ export function createCloud({
     ndc.set(((clientX - rect.left) / rect.width) * 2 - 1, -((clientY - rect.top) / rect.height) * 2 + 1)
     caster.setFromCamera(ndc, camera)
     const candidates = cards.filter(free)
-    const [hit] = caster.intersectObjects(
+    const hits = caster.intersectObjects(
       candidates.map((card) => card.mesh),
       false,
     )
-    const card = candidates.find((candidate) => candidate.mesh === hit?.object)
+    // Cards are drawn in the order of the pile, so the one taken is the one seen on top.
+    let card: CloudCard | undefined
+    for (const hit of hits) {
+      const found = candidates.find((candidate) => candidate.mesh === hit.object)
+      if (found && (!card || found.rank > card.rank)) card = found
+    }
     if (!card) return null
     for (const other of cards) other.held = false
     card.held = true
@@ -472,6 +498,13 @@ export function createCloud({
     const dt = Math.min((now - last) / 1000, 1 / 30)
     last = now
     time += dt
+
+    // The pile, from the back: each card is drawn over those behind it.
+    const pile = [...cards].sort((a, b) => a.p.z - b.p.z)
+    pile.forEach((card, rank) => {
+      card.rank = rank
+      card.mesh.renderOrder = rank
+    })
 
     const spring = 1.3 * settings.calm
     const damping = Math.exp(-1.7 * settings.calm * dt)

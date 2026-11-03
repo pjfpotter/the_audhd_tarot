@@ -1,8 +1,8 @@
 import { type Page, expect } from '@playwright/test'
 
 export const deck = (page: Page) => page.getByRole('button', { name: /^The deck/ })
-export const chooseButton = (page: Page) => page.getByRole('button', { name: 'Choose your cards' })
-export const mixAgainButton = (page: Page) => page.getByRole('button', { name: 'Mix again' })
+export const chooseButton = (page: Page) => page.getByRole('button', { name: 'Draw cards', exact: true })
+export const mixAgainButton = (page: Page) => page.getByRole('button', { name: 'Shuffle again' })
 export const layOutButton = (page: Page) => page.getByRole('button', { name: 'Lay out my cards' })
 export const faceDownCards = (page: Page) => page.getByRole('button', { name: /^Card \d+ of 22$/ })
 export const shuffle = (page: Page) => page.locator('[data-mode]')

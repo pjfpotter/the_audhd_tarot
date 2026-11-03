@@ -9,7 +9,7 @@ A tarot reader directs a shuffle in stages: the querent mixes, then chooses. The
 ## What Changes
 
 - **BREAKING** The three cards are no longer picked by a number folded from the person's taps, stirs and sways. The person chooses them. The hidden number, the glyph row, the spoken beat count and the line explaining them are removed.
-- The shuffle has two parts. Mixing: the cloud of 22 face-down cards is stirred by touch. Choosing: the person drags three cards into three spaces named for the positions of the reading. "Choose your cards" moves from the first part to the second, and "Mix again" goes back.
+- The shuffle has two parts. Mixing: the cloud of 22 face-down cards is stirred by touch. Choosing: the person drags three cards into three spaces named for the positions of the reading. "Draw cards" moves from the first part to the second, and "Shuffle again" goes back.
 - Every card in the cloud is one particular card from the moment it appears, and stays that card. The card a person touches is the card they get. Which card starts where is random, and so is the layout of the cloud, so no two shuffles start alike.
 - A touch disturbs only the cards near it, with a fixed top speed, and a card can never leave the clear part of the screen.
 - Where there is no cloud (reduced motion, no WebGL, "Hold still", or the cloud still loading) mixing is a tap on a deck that reshuffles the order, and choosing is tapping three of 22 face-down cards laid out in that order. Both parts have the same shape as the cloud's.

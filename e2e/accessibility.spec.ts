@@ -38,7 +38,7 @@ for (const theme of THEMES) {
     await page.keyboard.press('Enter')
     await page.keyboard.press('s')
 
-    await tabTo(page, 'Choose your cards')
+    await tabTo(page, 'Draw cards')
     await page.keyboard.press('Space')
     // Focus moves to the cards. A chosen card keeps focus, so Tab goes on to the next.
     await expect(faceDownCards(page).first()).toBeFocused()
@@ -83,7 +83,7 @@ for (const theme of THEMES) {
     await tabTo(page, 'Start a new reading')
     await page.keyboard.press('Enter')
     await expect(heading).toHaveText('The AuDHD Tarot')
-    expect(await handNow(page)).toEqual([null, null, null])
+    await expect(page.locator('[data-slot]')).toHaveCount(0)
     await expect(chooseButton(page)).toBeVisible()
   })
 }

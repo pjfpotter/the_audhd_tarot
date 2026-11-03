@@ -9,17 +9,21 @@ Lets a person mix the deck and then choose the three cards of their reading, so 
 ### Requirement: Mixing comes before choosing
 The shuffle SHALL be the app's first screen and SHALL have two parts, mixing and choosing. The app SHALL open on mixing. A control SHALL move from mixing to choosing, and in choosing a control SHALL return to mixing and empty the spaces. There SHALL be no minimum time or amount of mixing and no timer.
 
-#### Scenario: Open on mixing
+#### Scenario: Open on shuffling
 - **WHEN** a person opens the app
-- **THEN** the deck is shown with three empty spaces named for the three positions of the reading, and a control to choose
+- **THEN** the deck is shown alone, with the instruction to shuffle it and a control to draw cards, and no spaces for the cards
+
+#### Scenario: The spaces come with the draw
+- **WHEN** a person activates the control to draw cards
+- **THEN** three empty spaces named for the three positions of the reading appear
 
 #### Scenario: Mix as long as wanted
 - **WHEN** a person mixes for several minutes without choosing
 - **THEN** the app keeps responding and never ends or interrupts the mixing
 
-#### Scenario: Mix again
-- **WHEN** a person has chosen some cards and activates the control to mix again
-- **THEN** the spaces are empty and the deck is being mixed
+#### Scenario: Shuffle again
+- **WHEN** a person has chosen some cards and activates the control to shuffle again
+- **THEN** the spaces are gone and the deck is being shuffled
 
 ### Requirement: Every card is a particular card
 Each of the 22 cards in the deck SHALL be one particular card from the moment the deck appears until the reading is laid out. The deck SHALL be shown face down, and nothing about which card is which SHALL be visible or exposed to assistive technology before the reading is laid out. Which card starts where SHALL be random each time, from the device's own randomness.
@@ -35,6 +39,13 @@ Each of the 22 cards in the deck SHALL be one particular card from the moment th
 #### Scenario: Nothing given away
 - **WHEN** a screen reader reads the deck or the face-down cards
 - **THEN** it reads places in the layout, such as "Card 5 of 22", and never a card's name or number
+
+### Requirement: Shuffling changes which cards are on top
+In the cloud, stirring SHALL change which cards are on top of the pile and which are underneath, and cards SHALL be drawn one over another without cutting into each other.
+
+#### Scenario: A new order
+- **WHEN** a person stirs the cloud briskly for a few seconds
+- **THEN** cards that were on top are underneath others, and no card cuts through another
 
 ### Requirement: A touch is gentle and the cards stay in view
 In the cloud, a touch SHALL disturb only the cards near it. No amount of tapping, dragging or scrubbing SHALL move a card out of the clear part of the screen.

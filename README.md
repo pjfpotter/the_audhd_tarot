@@ -12,12 +12,14 @@ stay on your device.
 
 The app opens on the shuffle, in the two parts a reader gives one.
 
-**Mixing.** The deck is a cloud of 22 face-down cards. Drag across it to stir
-the cards under your finger; tap to nudge the ones nearest. The cloud starts
-differently every time, and a touch only disturbs the cards close to it, so
-nothing is thrown out of the screen. Take as long as you like, then choose.
+**Shuffling.** The screen is the cloud of 22 face-down cards and nothing else:
+"Shuffle the deck." Drag across it to stir the cards under your finger; tap to
+nudge the ones nearest. Stirring also changes which cards are on top and which
+are underneath. The cloud starts differently every time, and a touch only
+disturbs the cards close to it, so nothing is thrown out of the screen. Take as
+long as you like, then press "Draw cards".
 
-**Choosing.** Drag three cards into the three spaces, named for the positions
+**Drawing.** Three spaces, named for the positions of the reading, appear. Drag three cards into the three spaces, named for the positions
 of the reading. The card you touch is the card you get: every card in the cloud
 is one particular card from the moment it appears, and nothing is decided after
 you choose. Tap a card in a space to put it back.

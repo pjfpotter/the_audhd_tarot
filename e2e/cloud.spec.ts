@@ -97,16 +97,18 @@ test.describe('mixing the cloud', () => {
     const canvas = page.locator('canvas')
     await expect(canvas).toBeVisible()
     await expect(canvas).toHaveAttribute('aria-hidden', 'true')
-    await expect(deck(page)).toHaveAccessibleName('The deck. Drag to mix the cards, or press any key.')
+    await expect(deck(page)).toHaveAccessibleName('The deck. Drag to shuffle the cards, or press any key.')
     expect((await coverage(page)).middle).toBeGreaterThan(0.2)
   })
 
-  test('has three empty spaces, named for the three positions, ready for the cards', async ({ page }) => {
+  test('is the cloud alone: shuffle the deck, then draw', async ({ page }) => {
     await openOnCloud(page)
-    expect(await handNow(page)).toEqual([null, null, null])
+    await expect(page.getByText('Shuffle the deck.')).toBeVisible()
+    await expect(page.locator('[data-slot]')).toHaveCount(0)
     for (const position of ['Where I am', 'How I should travel', "Where I'm going next"]) {
-      await expect(page.getByText(position)).toBeVisible()
+      await expect(page.getByText(position)).toHaveCount(0)
     }
+    await expect(chooseButton(page)).toBeVisible()
     await expect(page.getByRole('button', { name: 'Draw three cards' })).toHaveCount(0)
     await expect(page.locator('[class*="_glyphs_"]')).toHaveCount(0)
   })
@@ -135,11 +137,17 @@ test.describe('mixing the cloud', () => {
     }
     await page.mouse.up()
 
-    // Still all there: cards in the middle of the stage, and none of the rest of the screen has taken them.
+    // Still all there: cards on every side of the stage, none of them gone off the screen. A scrub this hard
+    // piles them toward the edges, so this asks that the stage is still well covered, not that the middle is.
+    const overall = (c: { left: number; middle: number; right: number }) => (c.left + c.middle + c.right) / 3
     const spread = await coverage(page)
-    expect(spread.middle).toBeGreaterThan(0.2)
-    await page.waitForTimeout(2500)
-    expect((await coverage(page)).middle).toBeGreaterThan(0.2)
+    expect(overall(spread)).toBeGreaterThan(0.15)
+    expect(Math.min(spread.left, spread.middle, spread.right)).toBeGreaterThan(0.04)
+    // And it settles back toward the middle on its own.
+    await page.waitForTimeout(3000)
+    const settled = await coverage(page)
+    expect(overall(settled)).toBeGreaterThan(0.15)
+    expect(settled.middle).toBeGreaterThan(0.15)
     await expect(heading(page)).toHaveText('The AuDHD Tarot')
   })
 
@@ -148,7 +156,7 @@ test.describe('mixing the cloud', () => {
     await openOnCloud(page)
     await page.mouse.move(100, 200)
     await page.mouse.move(250, 300, { steps: 10 })
-    expect(await handNow(page)).toEqual([null, null, null])
+    await expect(page.locator('[data-slot]')).toHaveCount(0)
     await expect(heading(page)).toHaveText('The AuDHD Tarot')
   })
 
@@ -303,14 +311,14 @@ test.describe('choosing from the cloud', () => {
     await expect(page.locator('canvas')).toHaveCount(0)
   })
 
-  test('mixing again sends the cards back and empties the spaces', async ({ page }) => {
+  test('shuffling again sends the cards back and removes the spaces', async ({ page }) => {
     await openOnCloud(page)
     await chooseThree(page)
     await mixAgainButton(page).click()
-    expect(await handNow(page)).toEqual([null, null, null])
+    await expect(page.locator('[data-slot]')).toHaveCount(0)
     await expect(chooseButton(page)).toBeVisible()
     await expect(deck(page)).toBeFocused()
-    // And the same three can be chosen once more.
+    // And cards can be drawn once more.
     await chooseButton(page).click()
     await page.keyboard.press('Enter')
     expect((await handNow(page))[0]).not.toBeNull()
